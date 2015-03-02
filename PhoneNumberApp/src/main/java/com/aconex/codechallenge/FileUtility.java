@@ -23,8 +23,7 @@ public class FileUtility {
      * @return list of lines.
      * @throws IOException
      */
-    public List<String> readFiles(List<String> filesList)
-	    throws IOException {
+    public List<String> readFiles(List<String> filesList) throws IOException {
 
 	List<String> lines = new ArrayList<>();
 
@@ -45,13 +44,13 @@ public class FileUtility {
     public List<String> readFile(String file) throws IOException {
 	String currentLine = null;
 	List<String> lines = new ArrayList<>();
-	
+
 	try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 	    while ((currentLine = br.readLine()) != null) {
 		lines.add(currentLine);
 	    }
 	}
-	
+
 	return lines;
     }
 

@@ -21,11 +21,11 @@ public class DictionaryServiceImpl implements DictionaryService {
 
     @Override
     public String lookupWord(String lookupString) throws AconexException {
-	
+
 	if (dictionary == null) {
 	    this.load(dictionaryDefaultFilePath);
 	}
-	
+
 	return dictionary.lookup(lookupString);
     }
 
@@ -38,11 +38,12 @@ public class DictionaryServiceImpl implements DictionaryService {
 	    List<String> dictionaryWords = fileUtility.readFile(file);
 
 	    for (String dWord : dictionaryWords) {
-		dictionary.addWord(dWord.replaceAll("[^\\w]", "").toUpperCase());
+		dictionary
+			.addWord(dWord.replaceAll("[^\\w]", "").toUpperCase());
 	    }
 
 	} catch (IOException e) {
-	    throw new AconexException("Error reading file : "+file, e);
+	    throw new AconexException("Error reading file : " + file, e);
 	}
 
     }

@@ -53,24 +53,26 @@ public class PhoneNumberWordsApp {
 
 		Map<String, List<String>> phoneNumberWordMap = buildWords(
 			phoneNumberList, phoneNumberWordsGenerator);
-		
-		if(!phoneNumberWordMap.isEmpty()) {
-		    
-		    System.out.println("================================================");
-		    
+
+		if (!phoneNumberWordMap.isEmpty()) {
+
+		    System.out
+			    .println("================================================");
+
 		    for (String key : phoneNumberWordMap.keySet()) {
 			System.out.println("Phone Number [" + key + "]");
 			int suggestion = 1;
 			for (String word : phoneNumberWordMap.get(key)) {
-			    System.out.println("           Suggestion [" + suggestion + "] : "+word);
+			    System.out.println("           Suggestion ["
+				    + suggestion + "] : " + word);
 			}
-			
+
 		    }
-		    
-		    System.out.println("================================================");
+
+		    System.out
+			    .println("================================================");
 		}
-		
-		
+
 	    }
 	} catch (IOException e) {
 	    throw new AconexException(e.getMessage(), e);
@@ -85,8 +87,7 @@ public class PhoneNumberWordsApp {
      * @return
      * @throws AconexException
      */
-    public Map<String, List<String>> buildWords(
-	    List<String> phoneNumberList,
+    public Map<String, List<String>> buildWords(List<String> phoneNumberList,
 	    PhoneNumberWordsGenerator phoneNumberWordsGenerator)
 	    throws AconexException {
 	Map<String, List<String>> phoneNumberDictionaryWordMap = new LinkedHashMap<>();
@@ -102,8 +103,7 @@ public class PhoneNumberWordsApp {
 		    .generateWords(phoneNumber);
 	    List<String> dictionaryWords = new ArrayList<>();
 	    for (String phoneNumberWord : phoneNumberWords) {
-		String word = dictionaryService
-			.lookupWord(phoneNumberWord);
+		String word = dictionaryService.lookupWord(phoneNumberWord);
 		if (word != null) {
 		    dictionaryWords.add(word);
 		}

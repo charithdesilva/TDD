@@ -27,17 +27,19 @@ public class PhoneNumberWordsGenerator {
      * 
      * @param phoneNumber
      * @return
-     * @throws AconexException 
+     * @throws AconexException
      */
-    public List<String> generateWords(String phoneNumber) throws AconexException {
+    public List<String> generateWords(String phoneNumber)
+	    throws AconexException {
 	List<String> words = new LinkedList<String>();
 	List<String> wordsCache = new LinkedList<String>();
-	
+
 	String filteredPhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
 	try {
 	    Integer.parseInt(filteredPhoneNumber);
 	} catch (NumberFormatException e) {
-	    throw new AconexException("Invalid phone number found : "+phoneNumber);
+	    throw new AconexException("Invalid phone number found : "
+		    + phoneNumber);
 	}
 
 	this.generatePossibleWords("", filteredPhoneNumber, words, wordsCache);

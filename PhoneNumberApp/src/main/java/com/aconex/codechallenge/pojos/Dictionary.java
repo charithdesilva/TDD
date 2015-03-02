@@ -22,5 +22,4 @@ public class Dictionary {
 	return dictionaryMap.get(wordStr.toUpperCase());
     }
 
-
 }
