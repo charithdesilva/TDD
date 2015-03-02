@@ -1,113 +1,134 @@
+/**
+ * 
+ */
 package com.aconex.codechallenge;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
-
-import com.aconex.codechallenge.exceptions.AconexException;
 
 /**
- * @author chades
+ * @author cdesilva
  *
  */
 public class PhoneNumberWordsGenerator {
-	
-	private String dictionaryFilePath = "wordsEn.txt";
 
-	/**
-	 * Entry point for word-generator app.
-	 * 
-	 * @param parameters
-	 * @throws AconexException
-	 */
-	public void generateWords(String[] parameters) throws AconexException {
-		List<String> filesList = new ArrayList<>();
-		List<String> phoneNumberList = new ArrayList<>();
-		
-		int count = 0;
+    private static List<List<String>> phoneKeyMapper = null;
 
-		try {
-			
-			processArgumentsInput(parameters, filesList, count);
+    public PhoneNumberWordsGenerator() {
+	this.createPhoneNumberMapper();
 
-			processSystemInput(filesList, phoneNumberList);
-			
-			if (filesList.isEmpty() && phoneNumberList.isEmpty()) {
-				throw new AconexException("Phone number list not provided.");
-			}
-			
-			
+    }
 
-		} catch (FileNotFoundException e) {
-			throw new AconexException(e.getMessage(), e);
+    /**
+     * Generate list of possible words for input phone number.
+     * 
+     * @param phoneNumber
+     * @return
+     */
+    public List<String> generateWords(String phoneNumber) {
+	List<String> words = new LinkedList<String>();
+	List<String> wordsCache = new LinkedList<String>();
+
+	this.generatePossibleWords("", phoneNumber, words, wordsCache);
+
+	return words;
+    }
+
+    /**
+     * Recursive method to scan all possible word combinations for given phone
+     * number.
+     * 
+     * @param words
+     * @param prefix
+     * @param remainder
+     * @param wordsCache
+     *            purpose is to remove redundant scanning over same set of
+     *            numbers. (improve performance immensely)
+     */
+    public void generatePossibleWords(String prefix, String remainder,
+	    List<String> words, List<String> wordsCache) {
+
+	int index = Integer.parseInt(remainder.substring(0, 1));
+
+	for (int i = 0; i < phoneKeyMapper.get(index).size(); i++) {
+
+	    String mappedChar = phoneKeyMapper.get(index).get(i);
+
+	    if (prefix.equals("") && !wordsCache.isEmpty()) {
+
+		for (String word : wordsCache) {
+		    words.add(mappedChar + word);
 		}
-	}
 
-	/**
-	 * @param filesList
-	 * @param phoneNumberList
-	 */
-	public void processSystemInput(List<String> filesList,
-			List<String> phoneNumberList) {
-		
-		if (filesList.isEmpty()) {
-			String line;
-			Scanner stdin = new Scanner(System.in);
+	    } else {
 
-			while (stdin.hasNextLine() && !(line = stdin.nextLine()).equals("")) {
+		if (remainder.length() == 1) {
+		    String stringToBeAdded = prefix + mappedChar;
+		    words.add(stringToBeAdded);
+		    wordsCache.add(stringToBeAdded.substring(1));
 
-				phoneNumberList.add(line);
-			}
-			stdin.close();
-		}
-	}
-
-	/**
-	 * @param parameters
-	 * @param filesList
-	 * @param count
-	 * @throws AconexException
-	 * @throws FileNotFoundException
-	 */
-	public void processArgumentsInput(String[] parameters, List<String> filesList,
-			int count) throws AconexException, FileNotFoundException {
-		if (parameters != null) {
-
-			for (String parameter : parameters) {
-
-				if (parameter.equals("-d")) {
-					if (parameters.length == count + 2
-							&& new File(parameters[count + 1]).isFile()) {
-						this.dictionaryFilePath = parameters[count + 1];
-						break;
-					} else {
-						throw new AconexException(
-								"Invalid dictionary path.");
-					}
-				}
-
-				addFiles(filesList, parameter);
-				count += 1;
-			}
-		}
-	}
-
-
-	/**
-	 * Check availability of the file. If file exists add to the list.
-	 * @param filesList
-	 * @param line
-	 * @throws FileNotFoundException
-	 */
-	private void addFiles(List<String> filesList, String line)
-			throws FileNotFoundException {
-		if (new File(line).isFile()) {
-			filesList.add(line);
 		} else {
-			throw new FileNotFoundException("File " + line + " not found.");
+		    generatePossibleWords(prefix + mappedChar,
+			    remainder.substring(1), words, wordsCache);
 		}
+	    }
 	}
+    }
+
+    /**
+     * initialize phone number to character 2D list
+     */
+    private void createPhoneNumberMapper() {
+
+	if (phoneKeyMapper == null) {
+
+	    phoneKeyMapper = new ArrayList<>();
+	    phoneKeyMapper.add(0, new ArrayList<String>());
+	    phoneKeyMapper.add(1, new ArrayList<String>());
+
+	    phoneKeyMapper.add(2, new ArrayList<String>());
+	    phoneKeyMapper.get(2).add("A");
+	    phoneKeyMapper.get(2).add("B");
+	    phoneKeyMapper.get(2).add("C");
+
+	    phoneKeyMapper.add(3, new ArrayList<String>());
+	    phoneKeyMapper.get(3).add("D");
+	    phoneKeyMapper.get(3).add("E");
+	    phoneKeyMapper.get(3).add("F");
+
+	    phoneKeyMapper.add(4, new ArrayList<String>());
+	    phoneKeyMapper.get(4).add("G");
+	    phoneKeyMapper.get(4).add("H");
+	    phoneKeyMapper.get(4).add("I");
+
+	    phoneKeyMapper.add(5, new ArrayList<String>());
+	    phoneKeyMapper.get(5).add("J");
+	    phoneKeyMapper.get(5).add("K");
+	    phoneKeyMapper.get(5).add("L");
+
+	    phoneKeyMapper.add(6, new ArrayList<String>());
+	    phoneKeyMapper.get(6).add("M");
+	    phoneKeyMapper.get(6).add("N");
+	    phoneKeyMapper.get(6).add("O");
+
+	    phoneKeyMapper.add(7, new ArrayList<String>());
+	    phoneKeyMapper.get(7).add("P");
+	    phoneKeyMapper.get(7).add("Q");
+	    phoneKeyMapper.get(7).add("R");
+	    phoneKeyMapper.get(7).add("S");
+
+	    phoneKeyMapper.add(8, new ArrayList<String>());
+	    phoneKeyMapper.get(8).add("T");
+	    phoneKeyMapper.get(8).add("U");
+	    phoneKeyMapper.get(8).add("V");
+
+	    phoneKeyMapper.add(9, new ArrayList<String>());
+	    phoneKeyMapper.get(9).add("W");
+	    phoneKeyMapper.get(9).add("X");
+	    phoneKeyMapper.get(9).add("Y");
+	    phoneKeyMapper.get(9).add("Z");
+	}
+    }
 
 }
