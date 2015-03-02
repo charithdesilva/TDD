@@ -65,10 +65,9 @@ public class PhoneNumberWordsApp {
 			for (String word : phoneNumberWordMap.get(key)) {
 			    System.out.println("           Suggestion ["
 				    + suggestion + "] : " + word);
+			    suggestion ++;
 			}
-
 		    }
-
 		    System.out
 			    .println("================================================");
 		}
@@ -103,6 +102,7 @@ public class PhoneNumberWordsApp {
 		    .generateWords(phoneNumber);
 	    List<String> dictionaryWords = new ArrayList<>();
 	    for (String phoneNumberWord : phoneNumberWords) {
+		
 		String word = dictionaryService.lookupWord(phoneNumberWord);
 		if (word != null) {
 		    dictionaryWords.add(word);

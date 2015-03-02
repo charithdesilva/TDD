@@ -20,8 +20,8 @@ public class PhoneWordsAppMain {
      * @throws FileNotFoundException
      */
     public static void main(String[] args) throws AconexException {
-	PhoneNumberWordsApp wordGenerator = new PhoneNumberWordsApp();
-	wordGenerator.generateWords(args);
+	PhoneNumberWordsApp phoneNumberWordsApp = new PhoneNumberWordsApp();
+	phoneNumberWordsApp.generateWords(args);
     }
 
 }

@@ -51,12 +51,5 @@ public class PhoneNumberWordsGeneratorTest {
 	    fail();
 	}
     }
-    
-//    @Test
-//    public void givenPhoneNumberThenGenerateWordsList() {
-//	PhoneNumberWordsGenerator phoneNumberWordsGenerator = new PhoneNumberWordsGenerator();
-//	Assert.assertTrue(phoneNumberWordsGenerator.generateWords("2255")
-//		.contains("CALL"));
-//    }
 
 }
