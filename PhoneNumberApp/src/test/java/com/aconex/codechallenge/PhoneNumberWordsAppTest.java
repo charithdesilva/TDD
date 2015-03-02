@@ -109,7 +109,7 @@ public class PhoneNumberWordsAppTest {
 	expectedEx.expect(AconexException.class);
 	expectedEx.expectMessage("File /fakefilelocation/file.txt not found.");
 	new PhoneNumberWordsApp().generateWords(args);
-	Assert.assertTrue(true);
+	Assert.assertTrue(false);
     }
 
     public static final String PHONE_LIST_PATH_1 = "src//test//resources//phonelistA.txt";

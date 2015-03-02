@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.aconex.codechallenge.exceptions.AconexException;
+
 /**
  * @author cdesilva
  *
@@ -25,12 +27,20 @@ public class PhoneNumberWordsGenerator {
      * 
      * @param phoneNumber
      * @return
+     * @throws AconexException 
      */
-    public List<String> generateWords(String phoneNumber) {
+    public List<String> generateWords(String phoneNumber) throws AconexException {
 	List<String> words = new LinkedList<String>();
 	List<String> wordsCache = new LinkedList<String>();
+	
+	String filteredPhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
+	try {
+	    Integer.parseInt(filteredPhoneNumber);
+	} catch (NumberFormatException e) {
+	    throw new AconexException("Invalid phone number found : "+phoneNumber);
+	}
 
-	this.generatePossibleWords("", phoneNumber, words, wordsCache);
+	this.generatePossibleWords("", filteredPhoneNumber, words, wordsCache);
 
 	return words;
     }
@@ -46,7 +56,7 @@ public class PhoneNumberWordsGenerator {
      *            purpose is to remove redundant scanning over same set of
      *            numbers. (improve performance immensely)
      */
-    public void generatePossibleWords(String prefix, String remainder,
+    private void generatePossibleWords(String prefix, String remainder,
 	    List<String> words, List<String> wordsCache) {
 
 	int index = Integer.parseInt(remainder.substring(0, 1));

@@ -4,13 +4,11 @@
 package com.aconex.codechallenge.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.aconex.codechallenge.FileUtility;
 import com.aconex.codechallenge.exceptions.AconexException;
 import com.aconex.codechallenge.pojos.Dictionary;
-import com.aconex.codechallenge.pojos.DictionaryWord;
 
 /**
  * @author cdesilva
@@ -19,42 +17,34 @@ import com.aconex.codechallenge.pojos.DictionaryWord;
 public class DictionaryServiceImpl implements DictionaryService {
 
     private Dictionary dictionary = null;
-    
+    private String dictionaryDefaultFilePath = "wordsEn.txt";
+
     @Override
-    public List<DictionaryWord> lookupWords(String lookupString) {
+    public String lookupWord(String lookupString) throws AconexException {
 	
-	List<DictionaryWord> words = new ArrayList<>();
-	DictionaryWord dWord = new DictionaryWord();
-	
-	if() {
-	    
+	if (dictionary == null) {
+	    this.load(dictionaryDefaultFilePath);
 	}
 	
-	dWord.setWord("CALL");
-	dWord.setOriginalWord("CALL");
-	words.add(dWord);
-	
-	return words;
+	return dictionary.lookup(lookupString);
     }
 
     @Override
     public void load(String file) throws AconexException {
-	
+
 	dictionary = new Dictionary();
-	dictionary.setFilePath(file);
-	
 	try {
 	    FileUtility fileUtility = new FileUtility();
 	    List<String> dictionaryWords = fileUtility.readFile(file);
-	    
-	    for (String dictionaryWord : dictionaryWords) {
-		dictionary.addWord();
+
+	    for (String dWord : dictionaryWords) {
+		dictionary.addWord(dWord.replaceAll("[^\\w]", "").toUpperCase());
 	    }
-	    
+
 	} catch (IOException e) {
-	    throw new AconexException("File reading error", e);
+	    throw new AconexException("Error reading file : "+file, e);
 	}
-	
+
     }
 
 }
