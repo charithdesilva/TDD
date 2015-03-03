@@ -4,6 +4,7 @@
 package com.aconex.codechallenge;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -205,7 +206,7 @@ public class PhoneNumberWordsGenerator {
 		    dictionaryWords.add(word);
 		} else {
 		    // find all possible combinations
-		    this.generateWordsWithinWord(phoneNumberWord);
+		    this.generateWordsWithinWord(phoneNumber, phoneNumberWord);
 		}
 
 	    }
@@ -220,8 +221,13 @@ public class PhoneNumberWordsGenerator {
      * Handler method for extracting all words.
      * @param phoneNumberWord
      */
-    public void generateWordsWithinWord(String phoneNumberWord) {
+    public void generateWordsWithinWord(String phoneNumber, String phoneNumberWord) {
 	Map<Integer, Set<String>> indexWordMap = new LinkedHashMap<>();
+	List<Integer> numberList = new ArrayList<>();
+	
+	for (char ch : phoneNumber.toCharArray()) {
+	    numberList.add(Integer.valueOf(ch));
+	}
 
 	for (int k = 0; k < phoneNumberWord.length(); k++) {
 	    indexWordMap.put(k, new HashSet<String>());
