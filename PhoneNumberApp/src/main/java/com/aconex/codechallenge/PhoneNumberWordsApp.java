@@ -11,6 +11,7 @@ import java.util.Scanner;
 import com.aconex.codechallenge.exceptions.AconexException;
 import com.aconex.codechallenge.service.DictionaryService;
 import com.aconex.codechallenge.service.DictionaryServiceImpl;
+import com.aconex.codechallenge.utils.FileUtility;
 
 /**
  * @author chades

@@ -24,8 +24,9 @@ public class PhoneNumberWordsGenerator {
     private DictionaryService dictionaryService = null;
 
     public PhoneNumberWordsGenerator() {
-	this.createPhoneNumberMapper();
-
+	if (phoneKeyMapper == null) {
+	    this.createPhoneNumberMapper();
+	}
     }
 
     /**

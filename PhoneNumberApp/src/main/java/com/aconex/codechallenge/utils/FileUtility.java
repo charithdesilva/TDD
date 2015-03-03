@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.aconex.codechallenge;
+package com.aconex.codechallenge.utils;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

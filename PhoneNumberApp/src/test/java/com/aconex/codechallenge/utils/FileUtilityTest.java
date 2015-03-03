@@ -1,7 +1,9 @@
 /**
  * 
  */
-package com.aconex.codechallenge;
+package com.aconex.codechallenge.utils;
+
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +12,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.fail;
+import com.aconex.codechallenge.PhoneNumberWordsAppTest;
+
 
 /**
  * @author chades

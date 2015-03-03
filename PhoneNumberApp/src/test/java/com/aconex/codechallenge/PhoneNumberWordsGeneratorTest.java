@@ -11,6 +11,8 @@ import org.junit.rules.ExpectedException;
 import static org.junit.Assert.fail;
 
 import com.aconex.codechallenge.exceptions.AconexException;
+import com.aconex.codechallenge.service.DictionaryService;
+import com.aconex.codechallenge.service.DictionaryServiceImpl;
 
 /**
  * @author chades
@@ -25,8 +27,11 @@ public class PhoneNumberWordsGeneratorTest {
     public void givenPhoneNumberThenGenerateWordsList() {
 	try {
 	    PhoneNumberWordsGenerator phoneNumberWordsGenerator = new PhoneNumberWordsGenerator();
+	    DictionaryService ds = new DictionaryServiceImpl();
+	    ds.load(PhoneNumberWordsAppTest.DICTIONARY_PATH);
+	    phoneNumberWordsGenerator.setDictionaryService(ds);
 	    Assert.assertTrue(phoneNumberWordsGenerator.generateWords("225563")
-	    	.contains("CALL"));
+	    	.contains("CALL-ME"));
 	} catch (AconexException e) {
 	    fail();
 	}

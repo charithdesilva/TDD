@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.aconex.codechallenge.pojos;
+package com.aconex.codechallenge.components;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +11,19 @@ import java.util.Map;
  *
  */
 public class Dictionary {
+    
+    private static Dictionary dictionary = null;
+    
+    private Dictionary(){
+    }
+    
+    public static Dictionary getInstance() {
+	if (dictionary == null) {
+	    dictionary = new Dictionary();
+	}
+	
+	return dictionary;
+    }
 
     private Map<String, String> dictionaryMap = new HashMap<>();
 
