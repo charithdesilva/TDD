@@ -25,7 +25,7 @@ public class PhoneNumberWordsGeneratorTest {
     public void givenPhoneNumberThenGenerateWordsList() {
 	try {
 	    PhoneNumberWordsGenerator phoneNumberWordsGenerator = new PhoneNumberWordsGenerator();
-	    Assert.assertTrue(phoneNumberWordsGenerator.generateWords("2255")
+	    Assert.assertTrue(phoneNumberWordsGenerator.generateWords("225563")
 	    	.contains("CALL"));
 	} catch (AconexException e) {
 	    fail();
@@ -51,5 +51,16 @@ public class PhoneNumberWordsGeneratorTest {
 	    fail();
 	}
     }
+//    
+//    @Test
+//    public void whenNoPrimaryWordFoundForNumberThenGenerateCombinedWordsList() {
+//	try {
+//	    PhoneNumberWordsGenerator phoneNumberWordsGenerator = new PhoneNumberWordsGenerator();
+//	    Assert.assertTrue(phoneNumberWordsGenerator.generateWordsWithinWord("225563").contains("ME"));
+//	    	.contains("CALL"));
+//	} catch (AconexException e) {
+//	    fail();
+//	}
+//    }
 
 }

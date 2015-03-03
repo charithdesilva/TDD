@@ -106,6 +106,9 @@ public class PhoneNumberWordsApp {
 		String word = dictionaryService.lookupWord(phoneNumberWord);
 		if (word != null) {
 		    dictionaryWords.add(word);
+		} else {
+		    // find all possible combinations 
+		    phoneNumberWordsGenerator.generateWordsWithinWord(phoneNumber, phoneNumberWord);
 		}
 
 	    }
