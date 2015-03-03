@@ -7,5 +7,7 @@ public interface DictionaryService {
     String lookupWord(String string) throws AconexException;
 
     void load(String string) throws AconexException;
+    
+    Boolean isWordExists(String prefix);
 
 }

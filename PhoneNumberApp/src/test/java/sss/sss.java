@@ -43,6 +43,11 @@ public class sss {
 		indexWordMap.get((parentWordIndex + indexPosition)).add(suffix);
 	    }
 
+	    System.out.println("indexPosition >> " + indexPosition);
+	    System.out.println("prefix " + parentWordIndex + ">> " + prefix);
+	    System.out.println("suffix " + (parentWordIndex + indexPosition)
+		    + ">> " + suffix);
+
 	    wordExtractor(suffix, 2, parentWordIndex + indexPosition,
 		    indexWordMap);
 	    wordExtractor(word, indexPosition + 1, parentWordIndex,

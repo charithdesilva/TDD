@@ -48,4 +48,13 @@ public class DictionaryServiceImpl implements DictionaryService {
 
     }
 
+    @Override
+    public Boolean isWordExists(String lookupString) {
+	boolean exists = false;
+	if(dictionary.lookup(lookupString) != null && !dictionary.lookup(lookupString).trim().equals("")){
+	    exists = true;
+	}
+	return exists;
+    }
+
 }

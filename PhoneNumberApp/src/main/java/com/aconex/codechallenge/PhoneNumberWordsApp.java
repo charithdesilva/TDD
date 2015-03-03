@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -21,6 +20,7 @@ public class PhoneNumberWordsApp {
 
     private String dictionaryFilePath = null;
     private DictionaryService dictionaryService = null;
+
 
     /**
      * Entry point for word-generator app.
@@ -50,8 +50,14 @@ public class PhoneNumberWordsApp {
 	    }
 
 	    if (!phoneNumberList.isEmpty()) {
+		
+		this.dictionaryService = new DictionaryServiceImpl();
+		if (this.dictionaryFilePath != null) {
+		    dictionaryService.load(this.dictionaryFilePath);
+		}
 
-		Map<String, List<String>> phoneNumberWordMap = buildWords(
+		phoneNumberWordsGenerator.setDictionaryService(dictionaryService);
+		Map<String, List<String>> phoneNumberWordMap = phoneNumberWordsGenerator.buildWords(
 			phoneNumberList, phoneNumberWordsGenerator);
 
 		if (!phoneNumberWordMap.isEmpty()) {
@@ -78,46 +84,6 @@ public class PhoneNumberWordsApp {
 	}
     }
 
-    /**
-     * Process dictionary and prepare phoneNumberDictionaryWordMap
-     * 
-     * @param phoneNumberList
-     * @param phoneNumberWordsGenerator
-     * @return
-     * @throws AconexException
-     */
-    public Map<String, List<String>> buildWords(List<String> phoneNumberList,
-	    PhoneNumberWordsGenerator phoneNumberWordsGenerator)
-	    throws AconexException {
-	Map<String, List<String>> phoneNumberDictionaryWordMap = new LinkedHashMap<>();
-
-	dictionaryService = new DictionaryServiceImpl();
-	if (dictionaryFilePath != null) {
-	    dictionaryService.load(dictionaryFilePath);
-	}
-
-	for (String phoneNumber : phoneNumberList) {
-
-	    List<String> phoneNumberWords = phoneNumberWordsGenerator
-		    .generateWords(phoneNumber);
-	    List<String> dictionaryWords = new ArrayList<>();
-	    for (String phoneNumberWord : phoneNumberWords) {
-		
-		String word = dictionaryService.lookupWord(phoneNumberWord);
-		if (word != null) {
-		    dictionaryWords.add(word);
-		} else {
-		    // find all possible combinations 
-		    phoneNumberWordsGenerator.generateWordsWithinWord(phoneNumber, phoneNumberWord);
-		}
-
-	    }
-	    if (!dictionaryWords.isEmpty()) {
-		phoneNumberDictionaryWordMap.put(phoneNumber, dictionaryWords);
-	    }
-	}
-	return phoneNumberDictionaryWordMap;
-    }
 
     /**
      * @param filesList

@@ -4,10 +4,15 @@
 package com.aconex.codechallenge;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.aconex.codechallenge.exceptions.AconexException;
+import com.aconex.codechallenge.service.DictionaryService;
 
 /**
  * @author cdesilva
@@ -16,6 +21,7 @@ import com.aconex.codechallenge.exceptions.AconexException;
 public class PhoneNumberWordsGenerator {
 
     private static List<List<String>> phoneKeyMapper = null;
+    private DictionaryService dictionaryService = null;
 
     public PhoneNumberWordsGenerator() {
 	this.createPhoneNumberMapper();
@@ -143,13 +149,88 @@ public class PhoneNumberWordsGenerator {
 	}
     }
 
-    public void generateWordsWithinWord(String phoneNumber,
-	    String phoneNumberWord) {
-	
-	
-	
-	
-	
+    /**
+     * Extract all possible word combinations from a given word into HashMap
+     * provided.
+     * 
+     * @param word
+     * @param indexPosition
+     * @param parentWordIndex
+     * @param indexWordMap
+     */
+    public void extractWords(String word, int indexPosition,
+	    int parentWordIndex, Map<Integer, Set<String>> indexWordMap) {
+
+	if (word.length() > indexPosition) {
+	    String prefix = word.substring(0, indexPosition);
+	    String suffix = word.substring(indexPosition, word.length());
+
+	    if (prefix.length() > 1 && this.dictionaryService.isWordExists(prefix)) {
+		indexWordMap.get(parentWordIndex).add(prefix);
+	    }
+
+	    if (suffix.length() > 1 && this.dictionaryService.isWordExists(suffix)) {
+		indexWordMap.get((parentWordIndex + indexPosition)).add(suffix);
+	    }
+
+	    extractWords(suffix, 2, parentWordIndex + indexPosition,
+		    indexWordMap);
+	    extractWords(word, indexPosition + 1, parentWordIndex, indexWordMap);
+	}
+
+    }
+
+    /**
+     * Process dictionary and prepare phoneNumberDictionaryWordMap
+     * 
+     * @param phoneNumberList
+     * @param phoneNumberWordsGenerator
+     * @return
+     * @throws AconexException
+     */
+    public Map<String, List<String>> buildWords(List<String> phoneNumberList,
+	    PhoneNumberWordsGenerator phoneNumberWordsGenerator)
+	    throws AconexException {
+	Map<String, List<String>> phoneNumberDictionaryWordMap = new LinkedHashMap<>();
+
+	for (String phoneNumber : phoneNumberList) {
+
+	    List<String> phoneNumberWords = this.generateWords(phoneNumber);
+	    List<String> dictionaryWords = new ArrayList<>();
+	    for (String phoneNumberWord : phoneNumberWords) {
+
+		String word = dictionaryService.lookupWord(phoneNumberWord);
+		if (word != null) {
+		    dictionaryWords.add(word);
+		} else {
+		    // find all possible combinations
+		    this.generateWordsWithinWord(phoneNumberWord);
+		}
+
+	    }
+	    if (!dictionaryWords.isEmpty()) {
+		phoneNumberDictionaryWordMap.put(phoneNumber, dictionaryWords);
+	    }
+	}
+	return phoneNumberDictionaryWordMap;
+    }
+
+    /**
+     * Handler method for extracting all words.
+     * @param phoneNumberWord
+     */
+    public void generateWordsWithinWord(String phoneNumberWord) {
+	Map<Integer, Set<String>> indexWordMap = new LinkedHashMap<>();
+
+	for (int k = 0; k < phoneNumberWord.length(); k++) {
+	    indexWordMap.put(k, new HashSet<String>());
+	}
+
+	this.extractWords(phoneNumberWord, 1, 0, indexWordMap);
+    }
+
+    public void setDictionaryService(DictionaryService dictionaryService) {
+	this.dictionaryService = dictionaryService;
     }
 
 }
