@@ -104,12 +104,16 @@ public class PhoneNumberWordsApp {
 	    List<String> phoneNumberList) {
 
 	if (filesList.isEmpty()) {
+	    System.out.println("No file arguments were found. ");
+	    System.out.println("Please enter your phone numbers to continue.");
 	    String line;
 	    Scanner stdin = new Scanner(System.in);
 
-	    while (stdin.hasNextLine() && !(line = stdin.nextLine()).equals("")) {
-
-		phoneNumberList.add(line);
+	    while (stdin.hasNextLine() && !(line = stdin.nextLine()).equals("C")) {
+		System.out.println("Please enter another number or type 'C' to continue.");
+		if(line != null && !line.trim().equals("")) {
+		    phoneNumberList.add(line);
+		}
 	    }
 	    stdin.close();
 	}
