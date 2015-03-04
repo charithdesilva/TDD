@@ -1,29 +1,60 @@
 package sss;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 
 public class sss {
 
     static int count = 1;
+    
+    private String getFile(String fileName) {
+	 
+	StringBuilder result = new StringBuilder("");
+ 
+	//Get file from resources folder
+	ClassLoader classLoader = getClass().getClassLoader();
+	File file = new File(classLoader.getResource(fileName).getFile());
+ 
+	try (Scanner scanner = new Scanner(file)) {
+ 
+		while (scanner.hasNextLine()) {
+			String line = scanner.nextLine();
+			result.append(line).append("\n");
+		}
+ 
+		scanner.close();
+ 
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+ 
+	return result.toString();
+ 
+  }
     public static void main(String[] args) {
 	
-	System.out.println("test");
-	String word = "ANDYFLLOWER";
-	
-	Map<Integer, Set<String>> indexWordMap = new LinkedHashMap<>();
-	
-	for (int k = 0; k < word.length(); k++) {
-	    indexWordMap.put(k, new HashSet<String>());
-	}
-
-	int initialIndex = 1;
-	//extractWords(word, 0, word, word, initialIndex, indexWordMap, false, 0);
-	wordExtractor(word,  1, 0, indexWordMap);
-	System.out.println("loopcount "+count);
+	sss obj = new sss();
+	System.out.println(obj.getFile("wordsEn.txt"));
+//	
+//	System.out.println("test");
+//	String word = "ANDYFLLOWER";
+//	
+//	Map<Integer, Set<String>> indexWordMap = new LinkedHashMap<>();
+//	
+//	for (int k = 0; k < word.length(); k++) {
+//	    indexWordMap.put(k, new HashSet<String>());
+//	}
+//
+//	int initialIndex = 1;
+//	//extractWords(word, 0, word, word, initialIndex, indexWordMap, false, 0);
+//	wordExtractor(word,  1, 0, indexWordMap);
+//	System.out.println("loopcount "+count);
 	
     }
 

@@ -3,6 +3,7 @@
  */
 package com.aconex.codechallenge;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -13,6 +14,7 @@ import java.util.Set;
 
 import com.aconex.codechallenge.exceptions.AconexException;
 import com.aconex.codechallenge.service.DictionaryService;
+import com.aconex.codechallenge.service.DictionaryServiceImpl;
 
 /**
  * @author cdesilva
@@ -26,6 +28,9 @@ public class PhoneNumberWordsGenerator {
     public PhoneNumberWordsGenerator() {
 	if (phoneKeyMapper == null) {
 	    this.createPhoneNumberMapper();
+	}
+	if(dictionaryService == null) {
+	    dictionaryService = new DictionaryServiceImpl();
 	}
     }
 
@@ -43,7 +48,7 @@ public class PhoneNumberWordsGenerator {
 
 	String filteredPhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
 	try {
-	    Integer.parseInt(filteredPhoneNumber);
+	    BigInteger.valueOf(Long.parseLong(filteredPhoneNumber));
 	} catch (NumberFormatException e) {
 	    throw new AconexException("Invalid phone number found : "
 		    + phoneNumber);
@@ -190,8 +195,7 @@ public class PhoneNumberWordsGenerator {
      * @return
      * @throws AconexException
      */
-    public Map<String, List<String>> buildWords(List<String> phoneNumberList,
-	    PhoneNumberWordsGenerator phoneNumberWordsGenerator)
+    public Map<String, List<String>> buildWords(List<String> phoneNumberList)
 	    throws AconexException {
 	Map<String, List<String>> phoneNumberDictionaryWordMap = new LinkedHashMap<>();
 
@@ -239,11 +243,6 @@ public class PhoneNumberWordsGenerator {
 	    this.indexWordMap.put(k, new ArrayList<String>());
 	}
 	
-	if("CALLMENOW".equals(phoneNumberWord)) {
-	    System.out.println("phoneNumberWord "+phoneNumberWord);
-	}
-	
-	
 	// recursive loop to find all possible combinations
 	// TODO : refactoring opportunity where the 1st inner recursive call becomes too costly due to redundant searchers.  
 	this.extractWords(phoneNumberWord, 1, 0);
@@ -286,13 +285,11 @@ public class PhoneNumberWordsGenerator {
 	
 	if (wordSet != null && !wordSet.isEmpty()) {
 	    for(String word : wordSet) {
-		
-		
 		String phoneWord = prefix + "-" + word;
 		int lastWordIndex = index + word.length();
 		
 		if(lastIndex == (lastWordIndex + 1)) {
-		    wordList.add(phoneWord);
+		    wordList.add(phoneWord.substring(1));
 		} else {
 		    generateMultiWordsForNumber(lastWordIndex, wordList, phoneWord, lastIndex);
 		}

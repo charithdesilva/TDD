@@ -23,29 +23,58 @@ public class DictionaryServiceImpl implements DictionaryService {
     public String lookupWord(String lookupString) throws AconexException {
 
 	if (dictionary == null) {
-	    this.load(dictionaryDefaultFilePath);
+	    this.loadDefaultDictionary(dictionaryDefaultFilePath);
 	}
-
+	
 	return dictionary.lookup(lookupString);
     }
 
     @Override
     public void load(String file) throws AconexException {
-
+	
 	dictionary = Dictionary.getInstance();
+	
 	try {
 	    FileUtility fileUtility = new FileUtility();
 	    List<String> dictionaryWords = fileUtility.readFile(file);
 
-	    for (String dWord : dictionaryWords) {
-		dictionary
-			.addWord(dWord.replaceAll("[^\\w]", "").toUpperCase());
-	    }
+	    loadWords(dictionaryWords);
 
 	} catch (IOException e) {
 	    throw new AconexException("Error reading file : " + file, e);
 	}
 
+    }
+
+    /**
+     * 
+     * @param file
+     * @throws AconexException
+     */
+    private void loadDefaultDictionary(String file) throws AconexException {
+	
+	dictionary = Dictionary.getInstance();
+	
+	try {
+	    FileUtility fileUtility = new FileUtility();
+	    List<String> dictionaryWords = fileUtility.readResourceFile(file);
+
+	    loadWords(dictionaryWords);
+
+	} catch (IOException e) {
+	    throw new AconexException("Error reading file : " + file, e);
+	}
+
+    }
+    
+    /**
+     * @param dictionaryWords
+     */
+    public void loadWords(List<String> dictionaryWords) {
+	for (String dWord : dictionaryWords) {
+	dictionary
+		.addWord(dWord.replaceAll("[^\\w]", "").toUpperCase());
+	}
     }
 
     @Override

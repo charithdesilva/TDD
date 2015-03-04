@@ -22,17 +22,19 @@ public class PhoneNumberWordsApp {
     private String dictionaryFilePath = null;
     private DictionaryService dictionaryService = null;
 
-
     /**
      * Entry point for word-generator app.
      * 
      * @param parameters
+     * @return
      * @throws AconexException
      */
-    public void generateWords(String[] parameters) throws AconexException {
+    public Map<String, List<String>> generateWords(String[] parameters)
+	    throws AconexException {
 	List<String> filesList = new ArrayList<>();
 	List<String> phoneNumberList = new ArrayList<>();
 	FileUtility fileUtility = new FileUtility();
+	Map<String, List<String>> phoneNumberWordMap = null;
 	PhoneNumberWordsGenerator phoneNumberWordsGenerator = new PhoneNumberWordsGenerator();
 
 	int count = 0;
@@ -51,15 +53,16 @@ public class PhoneNumberWordsApp {
 	    }
 
 	    if (!phoneNumberList.isEmpty()) {
-		
+
 		this.dictionaryService = new DictionaryServiceImpl();
 		if (this.dictionaryFilePath != null) {
 		    dictionaryService.load(this.dictionaryFilePath);
 		}
 
-		phoneNumberWordsGenerator.setDictionaryService(dictionaryService);
-		Map<String, List<String>> phoneNumberWordMap = phoneNumberWordsGenerator.buildWords(
-			phoneNumberList, phoneNumberWordsGenerator);
+		phoneNumberWordsGenerator
+			.setDictionaryService(dictionaryService);
+		phoneNumberWordMap = phoneNumberWordsGenerator
+			.buildWords(phoneNumberList);
 
 		if (!phoneNumberWordMap.isEmpty()) {
 
@@ -67,24 +70,31 @@ public class PhoneNumberWordsApp {
 			    .println("================================================");
 
 		    for (String key : phoneNumberWordMap.keySet()) {
+			System.out
+				.println("------------------------------------------------");
 			System.out.println("Phone Number [" + key + "]");
+			System.out
+				.println("------------------------------------------------");
 			int suggestion = 1;
 			for (String word : phoneNumberWordMap.get(key)) {
 			    System.out.println("           Suggestion ["
 				    + suggestion + "] : " + word);
-			    suggestion ++;
+			    suggestion++;
 			}
 		    }
 		    System.out
 			    .println("================================================");
+		    System.out.println();
+		    System.out.println();
 		}
 
 	    }
 	} catch (IOException e) {
 	    throw new AconexException(e.getMessage(), e);
 	}
-    }
 
+	return phoneNumberWordMap;
+    }
 
     /**
      * @param filesList

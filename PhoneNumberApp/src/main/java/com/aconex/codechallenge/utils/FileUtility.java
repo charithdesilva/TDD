@@ -4,11 +4,16 @@
 package com.aconex.codechallenge.utils;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+
+import sss.sss;
 
 /**
  * @author chades
@@ -41,6 +46,41 @@ public class FileUtility {
      * @throws IOException
      * @throws FileNotFoundException
      */
+    public List<String> readResourceFile(String fileName) throws IOException {
+
+	List<String> lines = new ArrayList<>();
+
+	// Get file from resources folder
+	ClassLoader classLoader = getClass().getClassLoader();
+	URL resource = classLoader.getResource(fileName);
+	File file = null;
+	
+	if (resource != null) {
+	    file = new File(resource.getFile());
+	} else {
+	    throw new FileNotFoundException("File " + fileName + " not found.");
+	}
+
+	try (Scanner scanner = new Scanner(file)) {
+
+	    while (scanner.hasNextLine()) {
+		String line = scanner.nextLine();
+		lines.add(line);
+	    }
+
+	    scanner.close();
+
+	}
+	return lines;
+    }
+    
+    /**
+     * Read contents into a List for given file.
+     * 
+     * @param lines
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
     public List<String> readFile(String file) throws IOException {
 	String currentLine = null;
 	List<String> lines = new ArrayList<>();
@@ -53,5 +93,5 @@ public class FileUtility {
 
 	return lines;
     }
-
+    
 }

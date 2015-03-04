@@ -2,6 +2,9 @@ package com.aconex.codechallenge;
 
 import static org.junit.Assert.fail;
 
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -115,18 +118,19 @@ public class PhoneNumberWordsAppTest {
     @Test
     public void whenWordDictionaryFilePathArgumentWithPhoneNumberFilePathArgumentsReceiveFromSystemInForMultiWord() {
 	String args[] = { "-d", DICTIONARY_PATH };
-	systemInMock.provideText("225563\n2255669\n");
+	systemInMock.provideText("225563\n225563669\n");
 	try {
-	    new PhoneNumberWordsApp().generateWords(args);
+	    Map<String, List<String>> wordsMap = new PhoneNumberWordsApp().generateWords(args);
+	    Assert.assertTrue(wordsMap.get("225563669").contains("CALL-ME-NOW"));
 	} catch (AconexException e) {
 	    // AconexException should not be thrown.
 	    fail();
 	}
-	Assert.assertTrue(true);
+	
     }    
 
     public static final String PHONE_LIST_PATH_1 = "src//test//resources//phonelistA.txt";
     public static final String PHONE_LIST_PATH_2 = "src//test//resources//phonelistB.txt";
-    public static final String DICTIONARY_PATH = "src//test//resources//wordsEn.txt";
+    public static final String DICTIONARY_PATH = "src//test//resources//English58k.txt";
 
 }

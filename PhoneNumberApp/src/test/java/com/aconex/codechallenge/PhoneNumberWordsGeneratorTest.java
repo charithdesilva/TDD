@@ -3,6 +3,9 @@
  */
 package com.aconex.codechallenge;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,11 +30,8 @@ public class PhoneNumberWordsGeneratorTest {
     public void givenPhoneNumberThenGenerateWordsList() {
 	try {
 	    PhoneNumberWordsGenerator phoneNumberWordsGenerator = new PhoneNumberWordsGenerator();
-	    DictionaryService ds = new DictionaryServiceImpl();
-	    ds.load(PhoneNumberWordsAppTest.DICTIONARY_PATH);
-	    phoneNumberWordsGenerator.setDictionaryService(ds);
 	    Assert.assertTrue(phoneNumberWordsGenerator.generateWords("225563")
-	    	.contains("CALL-ME"));
+	    	.contains("CALLME"));
 	} catch (AconexException e) {
 	    fail();
 	}
@@ -56,44 +56,18 @@ public class PhoneNumberWordsGeneratorTest {
 	    fail();
 	}
     }
-//    
-//    @Test
-//    public void whenNoPrimaryWordFoundForNumberThenGenerateCombinedWordsList() {
-//	try {
-//	    PhoneNumberWordsGenerator phoneNumberWordsGenerator = new PhoneNumberWordsGenerator();
-//	    Assert.assertTrue(phoneNumberWordsGenerator.generateWordsWithinWord("225563").contains("ME"));
-//	    	.contains("CALL"));
-//	} catch (AconexException e) {
-//	    fail();
-//	}
-//    }
+    
+    @Test
+    public void whenNoPrimaryWordFoundForNumberThenGenerateCombinedWordsList() {
+	try {
+	    PhoneNumberWordsGenerator phoneNumberWordsGenerator = new PhoneNumberWordsGenerator();
+	    List<String> phoneNumnersList = new ArrayList<>();
+	    phoneNumnersList.add("225563");
+	    Assert.assertTrue(phoneNumberWordsGenerator.buildWords(phoneNumnersList).get("225563").contains("CALL-ME"));
+	} catch (AconexException e) {
+	    fail();
+	}
+    }
     
     
-//	StringBuffer s = new StringBuffer();
-//	for (String e : words) {
-//	    s.append(e + ",");
-//	}
-//	
-//	try {
-//	    
-//
-//		File file = new File("d:\\filename.txt");
-//
-//		// if file doesnt exists, then create it
-//		if (!file.exists()) {
-//			file.createNewFile();
-//		}
-//
-//		FileWriter fw = new FileWriter(file.getAbsoluteFile());
-//		BufferedWriter bw = new BufferedWriter(fw);
-//		bw.append(s);
-//		bw.close();
-//
-//		System.out.println("Done");
-//
-//	} catch (IOException e) {
-//		e.printStackTrace();
-//	}
-
-
 }
