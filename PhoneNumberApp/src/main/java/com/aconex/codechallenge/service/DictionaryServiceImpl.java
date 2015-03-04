@@ -17,7 +17,7 @@ import com.aconex.codechallenge.utils.FileUtility;
 public class DictionaryServiceImpl implements DictionaryService {
 
     private Dictionary dictionary = null;
-    private String dictionaryDefaultFilePath = "wordsEn.txt";
+    private String dictionaryDefaultFilePath = "English58k.txt";
 
     @Override
     public String lookupWord(String lookupString) throws AconexException {
