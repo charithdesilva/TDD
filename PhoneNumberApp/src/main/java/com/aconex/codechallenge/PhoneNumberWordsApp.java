@@ -86,6 +86,10 @@ public class PhoneNumberWordsApp {
 			    .println("================================================");
 		    System.out.println();
 		    System.out.println();
+		} else {
+
+		    System.out
+			    .println("==================== System could not find any matchers ======================");
 		}
 
 	    }
@@ -109,9 +113,11 @@ public class PhoneNumberWordsApp {
 	    String line;
 	    Scanner stdin = new Scanner(System.in);
 
-	    while (stdin.hasNextLine() && !(line = stdin.nextLine()).equals("C")) {
-		System.out.println("Please enter another number or type 'C' to continue.");
-		if(line != null && !line.trim().equals("")) {
+	    while (stdin.hasNextLine()
+		    && !(line = stdin.nextLine()).equals("C")) {
+		System.out
+			.println("Please enter another number or type 'C' to continue.");
+		if (line != null && !line.trim().equals("")) {
 		    phoneNumberList.add(line);
 		}
 	    }
