@@ -111,6 +111,19 @@ public class PhoneNumberWordsAppTest {
 	new PhoneNumberWordsApp().generateWords(args);
 	Assert.assertTrue(false);
     }
+    
+    @Test
+    public void whenWordDictionaryFilePathArgumentWithPhoneNumberFilePathArgumentsReceiveFromSystemInForMultiWord() {
+	String args[] = { "-d", DICTIONARY_PATH };
+	systemInMock.provideText("225563\n2255669\n");
+	try {
+	    new PhoneNumberWordsApp().generateWords(args);
+	} catch (AconexException e) {
+	    // AconexException should not be thrown.
+	    fail();
+	}
+	Assert.assertTrue(true);
+    }    
 
     public static final String PHONE_LIST_PATH_1 = "src//test//resources//phonelistA.txt";
     public static final String PHONE_LIST_PATH_2 = "src//test//resources//phonelistB.txt";

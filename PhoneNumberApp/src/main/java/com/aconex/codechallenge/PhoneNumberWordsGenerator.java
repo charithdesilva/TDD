@@ -4,7 +4,6 @@
 package com.aconex.codechallenge;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -161,7 +160,7 @@ public class PhoneNumberWordsGenerator {
      * @param indexWordMap
      */
     public void extractWords(String word, int indexPosition,
-	    int parentWordIndex, Map<Integer, Set<String>> indexWordMap) {
+	    int parentWordIndex) {
 
 	if (word.length() > indexPosition) {
 	    String prefix = word.substring(0, indexPosition);
@@ -175,12 +174,13 @@ public class PhoneNumberWordsGenerator {
 		indexWordMap.get((parentWordIndex + indexPosition)).add(suffix);
 	    }
 
-	    extractWords(suffix, 2, parentWordIndex + indexPosition,
-		    indexWordMap);
-	    extractWords(word, indexPosition + 1, parentWordIndex, indexWordMap);
+	    extractWords(suffix, 2, parentWordIndex + indexPosition);
+	    extractWords(word, indexPosition + 1, parentWordIndex);
 	}
 
     }
+    
+    private Map<Integer, List<String>> indexWordMap = null;
 
     /**
      * Process dictionary and prepare phoneNumberDictionaryWordMap
@@ -197,7 +197,9 @@ public class PhoneNumberWordsGenerator {
 
 	for (String phoneNumber : phoneNumberList) {
 
+	    // find all matching name for given word
 	    List<String> phoneNumberWords = this.generateWords(phoneNumber);
+	    
 	    List<String> dictionaryWords = new ArrayList<>();
 	    for (String phoneNumberWord : phoneNumberWords) {
 
@@ -206,7 +208,7 @@ public class PhoneNumberWordsGenerator {
 		    dictionaryWords.add(word);
 		} else {
 		    // find all possible combinations
-		    this.generateWordsWithinWord(phoneNumber, phoneNumberWord);
+		    dictionaryWords.addAll(this.generateWordsWithinWord(phoneNumber, phoneNumberWord));
 		}
 
 	    }
@@ -219,23 +221,105 @@ public class PhoneNumberWordsGenerator {
 
     /**
      * Handler method for extracting all words.
+     * 
      * @param phoneNumberWord
+     * @return 
      */
-    public void generateWordsWithinWord(String phoneNumber, String phoneNumberWord) {
-	Map<Integer, Set<String>> indexWordMap = new LinkedHashMap<>();
+    public List<String> generateWordsWithinWord(String phoneNumber, String phoneNumberWord) {
+	this.indexWordMap = new LinkedHashMap<>();
 	List<Integer> numberList = new ArrayList<>();
 	
+	//initialize numbers list with associate index. 
 	for (char ch : phoneNumber.toCharArray()) {
 	    numberList.add(Integer.valueOf(ch));
 	}
 
+	//initialize map's inner Set objects. 
 	for (int k = 0; k < phoneNumberWord.length(); k++) {
-	    indexWordMap.put(k, new HashSet<String>());
+	    this.indexWordMap.put(k, new ArrayList<String>());
 	}
+	
+	if("CALLMENOW".equals(phoneNumberWord)) {
+	    System.out.println("phoneNumberWord "+phoneNumberWord);
+	}
+	
+	
+	// recursive loop to find all possible combinations
+	// TODO : refactoring opportunity where the 1st inner recursive call becomes too costly due to redundant searchers.  
+	this.extractWords(phoneNumberWord, 1, 0);
+	
+	// this loop will concatenate possible word combinations together.  
+	int index = 0;
+	List<String> wordList = new ArrayList<String>();
+	
+	String prefix = "";
+	int lastIndex = phoneNumberWord.length() + 1;
+	
+	generateMultiWordsForNumber(index, wordList, prefix,
+		lastIndex);
 
-	this.extractWords(phoneNumberWord, 1, 0, indexWordMap);
+	//remove out duplicate entries 
+	if (!wordList.isEmpty()) {
+	    Set<String> wordsSet = new HashSet<>();
+	    wordsSet.addAll(wordList);
+	    wordList.clear();
+	    wordList.addAll(wordsSet);
+	}
+	
+	return wordList;
+
+	
     }
 
+    /**
+     * Generate string using multiple words to match phone number.  
+     * 
+     * @param indexWordMap
+     * @param index
+     * @param wordList
+     * @param prefix
+     * @param lastIndex
+     */
+    private void generateMultiWordsForNumber( int index,
+	    List<String> wordList, String prefix, int lastIndex) {
+	List<String> wordSet = this.indexWordMap.get(index);
+	
+	if (wordSet != null && !wordSet.isEmpty()) {
+	    for(String word : wordSet) {
+		
+		
+		String phoneWord = prefix + "-" + word;
+		int lastWordIndex = index + word.length();
+		
+		if(lastIndex == (lastWordIndex + 1)) {
+		    wordList.add(phoneWord);
+		} else {
+		    generateMultiWordsForNumber(lastWordIndex, wordList, phoneWord, lastIndex);
+		}
+		
+	    }
+	}
+    }
+
+    /**
+     * Makes up like of Indexes one can skip. 
+     * @param word
+     * @return
+     */
+    private List<Integer> extractSkipPositions(String word) {
+	
+	List<Integer> positions = new ArrayList<>();
+	positions.add(0);
+
+	for (int i = 0; i < word.length(); i++) {
+	    if ((i + 2) <= word.length() && i > 2) {
+		positions.add(i);
+	    }
+	}
+
+	return positions;
+    }  
+    
     public void setDictionaryService(DictionaryService dictionaryService) {
 	this.dictionaryService = dictionaryService;
     }

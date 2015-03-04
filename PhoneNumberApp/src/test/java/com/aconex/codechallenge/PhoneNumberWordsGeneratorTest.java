@@ -67,5 +67,33 @@ public class PhoneNumberWordsGeneratorTest {
 //	    fail();
 //	}
 //    }
+    
+    
+//	StringBuffer s = new StringBuffer();
+//	for (String e : words) {
+//	    s.append(e + ",");
+//	}
+//	
+//	try {
+//	    
+//
+//		File file = new File("d:\\filename.txt");
+//
+//		// if file doesnt exists, then create it
+//		if (!file.exists()) {
+//			file.createNewFile();
+//		}
+//
+//		FileWriter fw = new FileWriter(file.getAbsoluteFile());
+//		BufferedWriter bw = new BufferedWriter(fw);
+//		bw.append(s);
+//		bw.close();
+//
+//		System.out.println("Done");
+//
+//	} catch (IOException e) {
+//		e.printStackTrace();
+//	}
+
 
 }
