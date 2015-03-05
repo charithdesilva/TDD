@@ -3,8 +3,6 @@
  */
 package com.aconex.codechallenge.utils;
 
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +12,6 @@ import org.junit.Test;
 
 import com.aconex.codechallenge.PhoneNumberWordsAppTest;
 
-
 /**
  * @author chades
  *
@@ -22,41 +19,38 @@ import com.aconex.codechallenge.PhoneNumberWordsAppTest;
 public class FileUtilityTest {
 
     @Test
-    public void whenValidFileListThenReturnPhoneNumbersList() {
-
+    public void whenValidFileListThenReturnPhoneNumbersList()
+	    throws IOException {
 	FileUtility fileUtility = new FileUtility();
 	List<String> filesList = new ArrayList<>();
 	List<String> numbersList = null;
-
 	filesList.add(PhoneNumberWordsAppTest.PHONE_LIST_PATH_1);
-
-	try {
-	    numbersList = fileUtility.readFiles(filesList);
-	} catch (IOException e) {
-	    fail();
-	}
+	numbersList = fileUtility.readFiles(filesList);
 	Assert.assertEquals("121212", numbersList.get(0));
     }
-    
+
     @Test(expected = IOException.class)
     public void whenInValidFileListThenReturnIOException() throws IOException {
-	
 	FileUtility fileUtility = new FileUtility();
 	List<String> filesList = new ArrayList<>();
 	filesList.add("fakeLocation/fakeFile.txt");
 	fileUtility.readFiles(filesList);
 	Assert.assertTrue(true);
     }
-    
-//    @Test
-//    public void whenInValidFileListThenReturnIOException() throws IOException {
-//	
-//	FileUtility fileUtility = new FileUtility();
-//	List<String> filesList = new ArrayList<>();
-//	filesList.add("fakeLocation/fakeFile.txt");
-//	fileUtility.readFiles(filesList);
-//	Assert.assertTrue(true);
-//    }
-    
+
+    @Test(expected = IOException.class)
+    public void whenInValidResourceFileThenReturnIOException()
+	    throws IOException {
+	FileUtility fileUtility = new FileUtility();
+	fileUtility.readResourceFile("fakeLocation/fakeFile.txt");
+	Assert.assertTrue(true);
+    }
+
+    @Test
+    public void whenValidResourceFileThenReturnList() throws IOException {
+	FileUtility fileUtility = new FileUtility();
+	fileUtility.readResourceFile("English58k.txt");
+	Assert.assertTrue(true);
+    }
 
 }

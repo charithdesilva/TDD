@@ -92,4 +92,21 @@ public class FileUtility {
 	return lines;
     }
     
+    /**
+     * If file exists add to the list.
+     * 
+     * @param filesList
+     * @param parameter
+     * @throws FileNotFoundException
+     */
+    public void addFiles(List<String> filesList, String parameter)
+	    throws FileNotFoundException {
+	if (new File(parameter).isFile()) {
+	    filesList.add(parameter);
+	} else {
+	    throw new FileNotFoundException("File " + parameter + " not found.");
+	}
+    }
+
+    
 }

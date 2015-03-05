@@ -11,6 +11,10 @@ import java.util.Scanner;
 import com.aconex.codechallenge.exceptions.AconexException;
 import com.aconex.codechallenge.service.DictionaryService;
 import com.aconex.codechallenge.service.DictionaryServiceImpl;
+import com.aconex.codechallenge.service.PhoneNumberToWordsService;
+import com.aconex.codechallenge.service.PhoneNumberToWordsServiceImpl;
+import com.aconex.codechallenge.service.ReportingService;
+import com.aconex.codechallenge.service.ReportingServiceConsoleImpl;
 import com.aconex.codechallenge.utils.FileUtility;
 
 /**
@@ -21,7 +25,9 @@ public class PhoneNumberWordsApp {
 
     private String dictionaryFilePath = null;
     private DictionaryService dictionaryService = null;
-
+    private PhoneNumberToWordsService phoneNumberToWordsService = null;
+    private ReportingService ReportingService = null;
+    
     /**
      * Entry point for word-generator app.
      * 
@@ -35,7 +41,8 @@ public class PhoneNumberWordsApp {
 	List<String> phoneNumberList = new ArrayList<>();
 	FileUtility fileUtility = new FileUtility();
 	Map<String, List<String>> phoneNumberWordMap = null;
-	PhoneNumberWordsGenerator phoneNumberWordsGenerator = new PhoneNumberWordsGenerator();
+	phoneNumberToWordsService = new PhoneNumberToWordsServiceImpl();
+	ReportingService = new ReportingServiceConsoleImpl();
 
 	int count = 0;
 
@@ -57,40 +64,14 @@ public class PhoneNumberWordsApp {
 		this.dictionaryService = new DictionaryServiceImpl();
 		if (this.dictionaryFilePath != null) {
 		    dictionaryService.load(this.dictionaryFilePath);
+		    phoneNumberToWordsService
+		    .setDictionaryService(dictionaryService);
 		}
 
-		phoneNumberWordsGenerator
-			.setDictionaryService(dictionaryService);
-		phoneNumberWordMap = phoneNumberWordsGenerator
+		phoneNumberWordMap = phoneNumberToWordsService
 			.buildWords(phoneNumberList);
 
-		if (!phoneNumberWordMap.isEmpty()) {
-
-		    System.out
-			    .println("================================================");
-
-		    for (String key : phoneNumberWordMap.keySet()) {
-			System.out
-				.println("------------------------------------------------");
-			System.out.println("Phone Number [" + key + "]");
-			System.out
-				.println("------------------------------------------------");
-			int suggestion = 1;
-			for (String word : phoneNumberWordMap.get(key)) {
-			    System.out.println("           Suggestion ["
-				    + suggestion + "] : " + word);
-			    suggestion++;
-			}
-		    }
-		    System.out
-			    .println("================================================");
-		    System.out.println();
-		    System.out.println();
-		} else {
-
-		    System.out
-			    .println("==================== System could not find any matchers ======================");
-		}
+		ReportingService.displayReport(phoneNumberWordMap);
 
 	    }
 	} catch (IOException e) {
@@ -99,6 +80,7 @@ public class PhoneNumberWordsApp {
 
 	return phoneNumberWordMap;
     }
+
 
     /**
      * @param filesList
@@ -136,6 +118,8 @@ public class PhoneNumberWordsApp {
 	    List<String> filesList, int count) throws AconexException,
 	    FileNotFoundException {
 	if (parameters != null) {
+	    
+	    FileUtility fileUtility = new FileUtility();
 
 	    for (String parameter : parameters) {
 
@@ -149,25 +133,9 @@ public class PhoneNumberWordsApp {
 		    }
 		}
 
-		addFiles(filesList, parameter);
+		fileUtility.addFiles(filesList, parameter);
 		count += 1;
 	    }
-	}
-    }
-
-    /**
-     * If file exists add to the list.
-     * 
-     * @param filesList
-     * @param parameter
-     * @throws FileNotFoundException
-     */
-    private void addFiles(List<String> filesList, String parameter)
-	    throws FileNotFoundException {
-	if (new File(parameter).isFile()) {
-	    filesList.add(parameter);
-	} else {
-	    throw new FileNotFoundException("File " + parameter + " not found.");
 	}
     }
 

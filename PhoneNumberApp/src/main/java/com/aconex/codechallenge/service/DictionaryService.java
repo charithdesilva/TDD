@@ -9,5 +9,4 @@ public interface DictionaryService {
     void load(String string) throws AconexException;
     
     Boolean isWordExists(String prefix);
-
 }

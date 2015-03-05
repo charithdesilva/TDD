@@ -3,8 +3,6 @@
  */
 package com.aconex.codechallenge.service;
 
-import static org.junit.Assert.fail;
-
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,29 +21,21 @@ public class DictionaryServiceTest {
     public ExpectedException expectedEx = ExpectedException.none();
 
     @Test
-    public void givenValidParameterThenFindValueOnDefaultDictionary() {
+    public void givenValidParameterThenFindValueOnDefaultDictionary()
+	    throws AconexException {
 	DictionaryService dictionaryService = new DictionaryServiceImpl();
-	try {
-	    dictionaryService.load(PhoneNumberWordsAppTest.DICTIONARY_PATH);
-	    String matchingWord = dictionaryService
-		    .lookupWord("CALL");
-	    Assert.assertEquals("CALL", matchingWord);
-	} catch (AconexException e) {
-	    fail();
-	}
+	dictionaryService.load(PhoneNumberWordsAppTest.DICTIONARY_PATH);
+	String matchingWord = dictionaryService.lookupWord("CALL");
+	Assert.assertEquals("CALL", matchingWord);
     }
 
     @Test
-    public void whenDictionaryDirectoryArgumentPresentThenLoadDictionary() {
+    public void whenDictionaryDirectoryArgumentPresentThenLoadDictionary()
+	    throws AconexException {
 	DictionaryService dictionaryService = new DictionaryServiceImpl();
-	try {
-	    dictionaryService.load(PhoneNumberWordsAppTest.DICTIONARY_PATH);
-	    String matchingWord = dictionaryService
-		    .lookupWord("CALL");
-	    Assert.assertEquals("CALL", matchingWord);
-	} catch (AconexException e) {
-	    fail();
-	}
+	dictionaryService.load(PhoneNumberWordsAppTest.DICTIONARY_PATH);
+	String matchingWord = dictionaryService.lookupWord("CALL");
+	Assert.assertEquals("CALL", matchingWord);
     }
 
     @Test
@@ -55,7 +45,7 @@ public class DictionaryServiceTest {
 	expectedEx.expectMessage("Error reading file : fakedir/fakefile.txt");
 	DictionaryService dictionaryService = new DictionaryServiceImpl();
 	dictionaryService.load("fakedir/fakefile.txt");
-	// can't reach this point
+	// should't reach this point
 	Assert.assertTrue(false);
     }
 

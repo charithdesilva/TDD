@@ -1,7 +1,5 @@
 package com.aconex.codechallenge;
 
-import static org.junit.Assert.fail;
-
 import java.util.List;
 import java.util.Map;
 
@@ -26,16 +24,10 @@ public class PhoneNumberWordsAppTest {
     public ExpectedException expectedEx = ExpectedException.none();
 
     @Test
-    public void whenPhoneNumberFilePathArgumentsPresent() {
-
+    public void whenPhoneNumberFilePathArgumentsPresent()
+	    throws AconexException {
 	String args[] = { PHONE_LIST_PATH_1, PHONE_LIST_PATH_2 };
-	try {
-	    new PhoneNumberWordsApp().generateWords(args);
-	} catch (AconexException e) {
-	    // AconexException should not be thrown.
-	    fail();
-	}
-
+	new PhoneNumberWordsApp().generateWords(args);
 	Assert.assertTrue(true);
     }
 
@@ -48,27 +40,19 @@ public class PhoneNumberWordsAppTest {
     }
 
     @Test
-    public void whenNoPhoneNumberFilePathArgumentsThenReceiveFromSystemIn() {
-	systemInMock.provideText("31212\n313313\n");
-	try {
-	    new PhoneNumberWordsApp().generateWords(null);
-	} catch (AconexException e) {
-	    // AconexException should not be thrown.
-	    fail();
-	}
+    public void whenNoPhoneNumberFilePathArgumentsThenReceiveFromSystemIn()
+	    throws AconexException {
+	systemInMock.provideText("31212\n313313\nC\n");
+	new PhoneNumberWordsApp().generateWords(null);
 	Assert.assertTrue(true);
     }
 
     @Test
-    public void whenWordDictionaryFilePathArgumentWithPhoneNumberFilePathArguments() {
+    public void whenWordDictionaryFilePathArgumentWithPhoneNumberFilePathArguments()
+	    throws AconexException {
 	String args[] = { PHONE_LIST_PATH_1, PHONE_LIST_PATH_2, "-d",
 		DICTIONARY_PATH };
-	try {
-	    new PhoneNumberWordsApp().generateWords(args);
-	} catch (AconexException e) {
-	    // AconexException should not be thrown.
-	    fail();
-	}
+	new PhoneNumberWordsApp().generateWords(args);
 	Assert.assertTrue(true);
     }
 
@@ -83,15 +67,11 @@ public class PhoneNumberWordsAppTest {
     }
 
     @Test
-    public void whenWordDictionaryFilePathArgumentWithPhoneNumberFilePathArgumentsReceiveFromSystemIn() {
+    public void whenWordDictionaryFilePathArgumentWithPhoneNumberFilePathArgumentsReceiveFromSystemIn()
+	    throws AconexException {
 	String args[] = { "-d", DICTIONARY_PATH };
-	systemInMock.provideText("31212\n313313\n");
-	try {
-	    new PhoneNumberWordsApp().generateWords(args);
-	} catch (AconexException e) {
-	    // AconexException should not be thrown.
-	    fail();
-	}
+	systemInMock.provideText("31212\n313313\nC\n");
+	new PhoneNumberWordsApp().generateWords(args);
 	Assert.assertTrue(true);
     }
 
@@ -114,20 +94,16 @@ public class PhoneNumberWordsAppTest {
 	new PhoneNumberWordsApp().generateWords(args);
 	Assert.assertTrue(false);
     }
-    
+
     @Test
-    public void whenWordDictionaryFilePathArgumentWithPhoneNumberFilePathArgumentsReceiveFromSystemInForMultiWord() {
+    public void whenWordDictionaryFilePathArgumentWithPhoneNumberFilePathArgumentsReceiveFromSystemInForMultiWord()
+	    throws AconexException {
 	String args[] = { "-d", DICTIONARY_PATH };
-	systemInMock.provideText("225563\n225563669\n");
-	try {
-	    Map<String, List<String>> wordsMap = new PhoneNumberWordsApp().generateWords(args);
-	    Assert.assertTrue(wordsMap.get("225563669").contains("CALL-ME-NOW"));
-	} catch (AconexException e) {
-	    // AconexException should not be thrown.
-	    fail();
-	}
-	
-    }    
+	systemInMock.provideText("225563\n225563669\nC\n");
+	Map<String, List<String>> wordsMap = new PhoneNumberWordsApp()
+		.generateWords(args);
+	Assert.assertTrue(wordsMap.get("225563669").contains("CALL-ME-NOW"));
+    }
 
     public static final String PHONE_LIST_PATH_1 = "src//test//resources//phonelistA.txt";
     public static final String PHONE_LIST_PATH_2 = "src//test//resources//phonelistB.txt";
