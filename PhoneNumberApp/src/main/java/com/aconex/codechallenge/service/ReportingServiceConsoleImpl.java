@@ -5,12 +5,15 @@ package com.aconex.codechallenge.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
- * @author cdesilva
+ * @author Charith De Silva
  *
  */
 public class ReportingServiceConsoleImpl implements ReportingService {
+    
+    private static final Logger LOGGER = Logger.getLogger(ReportingServiceConsoleImpl.class.getName());
     
     /**
      * @param phoneNumberWordMap

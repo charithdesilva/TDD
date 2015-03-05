@@ -5,12 +5,15 @@ package com.aconex.codechallenge.components;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
- * @author cdesilva
+ * @author Charith De Silva
  *
  */
 public class Dictionary {
+    
+    private static final Logger LOGGER = Logger.getLogger(Dictionary.class.getName());
     
     private static Dictionary dictionary = null;
     

@@ -5,16 +5,19 @@ package com.aconex.codechallenge.service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.aconex.codechallenge.components.Dictionary;
 import com.aconex.codechallenge.exceptions.AconexException;
 import com.aconex.codechallenge.utils.FileUtility;
 
 /**
- * @author cdesilva
+ * @author Charith De Silva
  *
  */
 public class DictionaryServiceImpl implements DictionaryService {
+    
+    private static final Logger LOGGER = Logger.getLogger(DictionaryServiceImpl.class.getName());
 
     private Dictionary dictionary = null;
     private String dictionaryDefaultFilePath = "English58k.txt";

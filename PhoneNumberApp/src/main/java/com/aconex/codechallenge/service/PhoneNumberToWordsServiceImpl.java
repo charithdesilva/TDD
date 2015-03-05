@@ -11,16 +11,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import com.aconex.codechallenge.exceptions.AconexException;
-import com.aconex.codechallenge.service.DictionaryService;
-import com.aconex.codechallenge.service.DictionaryServiceImpl;
 
 /**
- * @author cdesilva
+ * @author Charith De Silva
  *
  */
 public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService {
+    
+    private static final Logger LOGGER = Logger.getLogger(PhoneNumberToWordsServiceImpl.class.getName());
 
     private static List<List<String>> phoneKeyMapper = null;
     private DictionaryService dictionaryService = null;

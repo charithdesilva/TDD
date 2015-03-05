@@ -12,12 +12,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 /**
  * @author Charith De Silva
  *
  */
 public class FileUtility {
+    
+    private static final Logger LOGGER = Logger.getLogger(FileUtility.class.getName());
 
     /**
      * Read contents into a List for given files list.

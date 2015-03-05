@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 import com.aconex.codechallenge.exceptions.AconexException;
 import com.aconex.codechallenge.service.DictionaryService;
@@ -22,6 +23,9 @@ import com.aconex.codechallenge.utils.FileUtility;
  *
  */
 public class PhoneNumberWordsApp {
+    
+    private static final Logger LOGGER = Logger.getLogger(PhoneNumberWordsApp.class.getName());
+
 
     private String dictionaryFilePath = null;
     private DictionaryService dictionaryService = null;
@@ -37,6 +41,8 @@ public class PhoneNumberWordsApp {
      */
     public Map<String, List<String>> generateWords(String[] parameters)
 	    throws AconexException {
+	
+	LOGGER.fine("Start method generateWords");
 	
 	List<String> filesList = new ArrayList<>();
 	List<String> phoneNumberList = new ArrayList<>();
