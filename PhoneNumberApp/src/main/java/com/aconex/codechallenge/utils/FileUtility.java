@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * @author chades
+ * @author Charith De Silva
  *
  */
 public class FileUtility {

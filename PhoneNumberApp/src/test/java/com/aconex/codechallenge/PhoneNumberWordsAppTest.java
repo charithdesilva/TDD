@@ -12,7 +12,7 @@ import org.junit.rules.ExpectedException;
 import com.aconex.codechallenge.exceptions.AconexException;
 
 /**
- * @author chades
+ * @author Charith De Silva
  *
  */
 public class PhoneNumberWordsAppTest {

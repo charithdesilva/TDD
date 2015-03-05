@@ -13,7 +13,7 @@ import org.junit.Test;
 import com.aconex.codechallenge.PhoneNumberWordsAppTest;
 
 /**
- * @author chades
+ * @author Charith De Silva
  *
  */
 public class FileUtilityTest {

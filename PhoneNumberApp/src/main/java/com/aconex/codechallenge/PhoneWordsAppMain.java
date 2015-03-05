@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 import com.aconex.codechallenge.exceptions.AconexException;
 
 /**
- * @author chades
+ * @author Charith De Silva
  *
  */
 public class PhoneWordsAppMain {

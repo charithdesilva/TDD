@@ -8,5 +8,5 @@ public interface DictionaryService {
 
     void load(String string) throws AconexException;
     
-    Boolean isWordExists(String prefix);
+    Boolean isWordExists(String prefix) throws AconexException;
 }

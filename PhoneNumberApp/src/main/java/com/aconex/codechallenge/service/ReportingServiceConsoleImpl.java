@@ -42,7 +42,7 @@ public class ReportingServiceConsoleImpl implements ReportingService {
 	} else {
 
 	    System.out
-		    .println("==================== System could not find any matchers ======================");
+		    .println("==================== No match found ======================");
 	}
     }
 

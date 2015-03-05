@@ -32,11 +32,11 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 	if (phoneKeyMapper == null) {
 	    this.createPhoneNumberMapper();
 	}
-	if(dictionaryService == null) {
+	if (dictionaryService == null) {
 	    dictionaryService = new DictionaryServiceImpl();
 	}
     }
-    
+
     /**
      * initialize phone number to character 2D list
      */
@@ -91,8 +91,7 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 	    phoneKeyMapper.get(9).add("Z");
 	}
     }
-    
-    
+
     /**
      * Process dictionary and prepare phoneNumberDictionaryWordMap
      * 
@@ -104,31 +103,94 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
     @Override
     public Map<String, List<String>> buildWords(List<String> phoneNumberList)
 	    throws AconexException {
-	
+
 	Map<String, List<String>> phoneNumberDictionaryWordMap = new LinkedHashMap<>();
 
 	for (String phoneNumber : phoneNumberList) {
 
-	    // find all matching name for given word
-	    List<String> phoneNumberWords = this.generateWords(phoneNumber);
-	    
-	    List<String> dictionaryWords = new ArrayList<>();
-	    for (String phoneNumberWord : phoneNumberWords) {
+	    String filteredNumber = phoneNumber.replaceAll("[^\\d]", "");
 
-		String word = dictionaryService.lookupWord(phoneNumberWord);
-		if (word != null) {
-		    dictionaryWords.add(word);
-		} else {
-		    // find all possible combinations
-		    dictionaryWords.addAll(this.generateWordsWithinWord(phoneNumber, phoneNumberWord));
-		}
-
+	    if (filteredNumber == null || filteredNumber.trim().equals("")) {
+		throw new AconexException("Invalid phone number found : "
+			+ phoneNumber);
 	    }
+
+	    // find all matching name for given word
+	    List<String> dictionaryWords = filterValidWords(filteredNumber,
+		    this.generateWords(filteredNumber));
+
+	    // if empty try with numeric digit in
+	    if (dictionaryWords.isEmpty()) {
+
+		List<Integer> ignoreIdexes = new ArrayList<>();
+		ignoreIdexes.add(1);
+		ignoreIdexes.add((filteredNumber.length() - 2));
+		
+		List<String> prefixWordsList = new ArrayList<>();
+		List<String> suffixWordsList = new ArrayList<>();
+		
+		for (int i = 0; i < filteredNumber.length(); i++) {
+		    if (!ignoreIdexes.contains(i)) {
+			
+			String prefixNumber = filteredNumber.substring(0,i);
+			String suffixNumber = filteredNumber.substring(i+1, filteredNumber.length());
+			
+			if(i == 0) {
+			    prefixWordsList.add("");
+			} else if (null != prefixNumber && !prefixNumber.trim().equals("")) {
+			    prefixWordsList = filterValidWords(prefixNumber, this.generateWords(prefixNumber));
+			}
+			
+			if (null != suffixNumber && !suffixNumber.trim().equals("")) {
+			    suffixWordsList = filterValidWords(prefixNumber, this.generateWords(suffixNumber));
+			}
+			
+			if(prefixWordsList.isEmpty() && suffixWordsList.isEmpty())
+			    continue;
+			
+			for(String prefixWord : prefixWordsList) {
+			    for(String suffixWord : suffixWordsList) {
+				dictionaryWords.add(prefixWord + filteredNumber.toCharArray()[i] + suffixWord);
+				System.out.println("ADDING : " +prefixNumber + "["+ filteredNumber.toCharArray()[i] + "]"+ suffixNumber); 
+			    }
+			}
+			
+		    }
+		}
+	    }
+
 	    if (!dictionaryWords.isEmpty()) {
 		phoneNumberDictionaryWordMap.put(phoneNumber, dictionaryWords);
 	    }
 	}
+
 	return phoneNumberDictionaryWordMap;
+    }
+
+    /**
+     * @param filteredNumber
+     * @param phoneNumberWords
+     * @return
+     * @throws AconexException
+     */
+    private List<String> filterValidWords(String filteredNumber,
+	    List<String> phoneNumberWords) throws AconexException {
+	List<String> dictionaryWords = new ArrayList<>();
+
+	for (String phoneNumberWord : phoneNumberWords) {
+
+	    // capture matching name for full phone number
+	    String word = dictionaryService.lookupWord(phoneNumberWord);
+	    if (word != null) {
+		dictionaryWords.add(word);
+	    }
+
+	    // find all other possible combinations
+	    dictionaryWords.addAll(this.generateWordsWithinWord(filteredNumber,
+		    phoneNumberWord));
+
+	}
+	return dictionaryWords;
     }
 
     /**
@@ -143,15 +205,14 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 	List<String> words = new LinkedList<String>();
 	List<String> wordsCache = new LinkedList<String>();
 
-	String filteredPhoneNumber = phoneNumber.replaceAll("[^\\d]", "");
 	try {
-	    BigInteger.valueOf(Long.parseLong(filteredPhoneNumber));
+	    BigInteger.valueOf(Long.parseLong(phoneNumber));
 	} catch (NumberFormatException e) {
 	    throw new AconexException("Invalid phone number found : "
 		    + phoneNumber);
 	}
 
-	this.generatePossibleWords("", filteredPhoneNumber, words, wordsCache);
+	this.generatePossibleWords("", phoneNumber, words, wordsCache);
 
 	return words;
     }
@@ -205,19 +266,22 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
      * @param indexPosition
      * @param parentWordIndex
      * @param indexWordMap
+     * @throws AconexException
      */
     private void extractWords(String word, int indexPosition,
-	    int parentWordIndex) {
+	    int parentWordIndex) throws AconexException {
 
 	if (word.length() > indexPosition) {
 	    String prefix = word.substring(0, indexPosition);
 	    String suffix = word.substring(indexPosition, word.length());
 
-	    if (prefix.length() > 1 && this.dictionaryService.isWordExists(prefix)) {
+	    if (prefix.length() > 1
+		    && this.dictionaryService.isWordExists(prefix)) {
 		indexWordMap.get(parentWordIndex).add(prefix);
 	    }
 
-	    if (suffix.length() > 1 && this.dictionaryService.isWordExists(suffix)) {
+	    if (suffix.length() > 1
+		    && this.dictionaryService.isWordExists(suffix)) {
 		indexWordMap.get((parentWordIndex + indexPosition)).add(suffix);
 	    }
 
@@ -226,58 +290,59 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 	}
 
     }
-    
+
     private Map<Integer, List<String>> indexWordMap = null;
-    
+
     /**
      * Handler method for extracting all words.
      * 
      * @param phoneNumberWord
-     * @return 
+     * @return
+     * @throws AconexException
      */
-    private List<String> generateWordsWithinWord(String phoneNumber, String phoneNumberWord) {
+    private List<String> generateWordsWithinWord(String phoneNumber,
+	    String phoneNumberWord) throws AconexException {
 	this.indexWordMap = new LinkedHashMap<>();
 	List<Integer> numberList = new ArrayList<>();
-	
-	//initialize numbers list with associate index. 
+
+	// initialize numbers list with associate index.
 	for (char ch : phoneNumber.toCharArray()) {
 	    numberList.add(Integer.valueOf(ch));
 	}
 
-	//initialize map's inner Set objects. 
+	// initialize map's inner Set objects.
 	for (int k = 0; k < phoneNumberWord.length(); k++) {
 	    this.indexWordMap.put(k, new ArrayList<String>());
 	}
-	
+
 	// recursive loop to find all possible combinations
-	// TODO : refactoring opportunity where the 1st inner recursive call becomes too costly due to redundant searchers.  
+	// TODO : refactoring opportunity where the 1st inner recursive call
+	// becomes too costly due to redundant searchers.
 	this.extractWords(phoneNumberWord, 1, 0);
-	
-	// this loop will concatenate possible word combinations together.  
+
+	// this loop will concatenate possible word combinations together.
 	int index = 0;
 	List<String> wordList = new ArrayList<String>();
-	
+
 	String prefix = "";
 	int lastIndex = phoneNumberWord.length() + 1;
-	
-	generateMultiWordsForNumber(index, wordList, prefix,
-		lastIndex);
 
-	//remove out duplicate entries 
+	generateMultiWordsForNumber(index, wordList, prefix, lastIndex);
+
+	// remove out duplicate entries
 	if (!wordList.isEmpty()) {
 	    Set<String> wordsSet = new HashSet<>();
 	    wordsSet.addAll(wordList);
 	    wordList.clear();
 	    wordList.addAll(wordsSet);
 	}
-	
+
 	return wordList;
 
-	
     }
 
     /**
-     * Generate string using multiple words to match phone number.  
+     * Generate string using multiple words to match phone number.
      * 
      * @param indexWordMap
      * @param index
@@ -285,46 +350,31 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
      * @param prefix
      * @param lastIndex
      */
-    private void generateMultiWordsForNumber( int index,
-	    List<String> wordList, String prefix, int lastIndex) {
+    private void generateMultiWordsForNumber(int index, List<String> wordList,
+	    String prefix, int lastIndex) {
 	List<String> wordSet = this.indexWordMap.get(index);
-	
+
 	if (wordSet != null && !wordSet.isEmpty()) {
-	    for(String word : wordSet) {
+	    for (String word : wordSet) {
 		String phoneWord = prefix + "-" + word;
 		int lastWordIndex = index + word.length();
-		
-		if(lastIndex == (lastWordIndex + 1)) {
+
+		if (lastIndex == (lastWordIndex + 1)) {
 		    wordList.add(phoneWord.substring(1));
 		} else {
-		    generateMultiWordsForNumber(lastWordIndex, wordList, phoneWord, lastIndex);
+		    generateMultiWordsForNumber(lastWordIndex, wordList,
+			    phoneWord, lastIndex);
 		}
-		
+
 	    }
 	}
     }
 
-//    /**
-//     * Makes up like of Indexes one can skip. 
-//     * @param word
-//     * @return
-//     */
-//    private List<Integer> extractSkipPositions(String word) {
-//	
-//	List<Integer> positions = new ArrayList<>();
-//	positions.add(0);
-//
-//	for (int i = 0; i < word.length(); i++) {
-//	    if ((i + 2) <= word.length() && i > 2) {
-//		positions.add(i);
-//	    }
-//	}
-//
-//	return positions;
-//    }  
-    
-    /* (non-Javadoc)
-     * @see com.aconex.codechallenge.service.PhoneNumberToWordsService#setDictionaryService(com.aconex.codechallenge.service.DictionaryService)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.aconex.codechallenge.service.PhoneNumberToWordsService#
+     * setDictionaryService(com.aconex.codechallenge.service.DictionaryService)
      */
     @Override
     public void setDictionaryService(DictionaryService dictionaryService) {

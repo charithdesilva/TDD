@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.aconex.codechallenge;
+package com.aconex.codechallenge.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,20 +16,20 @@ import com.aconex.codechallenge.service.PhoneNumberToWordsService;
 import com.aconex.codechallenge.service.PhoneNumberToWordsServiceImpl;
 
 /**
- * @author chades
+ * @author Charith De Silva
  *
  */
-public class PhoneNumberWordsGeneratorTest {
+public class PhoneNumberToWordsServiceTest {
 
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
 
     @Test
     public void givenPhoneNumberThenGenerateWordsList() throws AconexException {
-	PhoneNumberToWordsService phoneNumberWordsGenerator = new PhoneNumberToWordsServiceImpl();
+	PhoneNumberToWordsService phoneNumberToWordsService = new PhoneNumberToWordsServiceImpl();
 	List<String> phoneNumberList = new ArrayList<>();
 	phoneNumberList.add("225563");
-	Assert.assertTrue(phoneNumberWordsGenerator.buildWords(phoneNumberList)
+	Assert.assertTrue(phoneNumberToWordsService.buildWords(phoneNumberList)
 		.get("225563").contains("CALL-ME"));
     }
 
@@ -38,31 +38,41 @@ public class PhoneNumberWordsGeneratorTest {
 	    throws AconexException {
 	expectedEx.expect(AconexException.class);
 	expectedEx.expectMessage("Invalid phone number found : INVALIDNUMBER");
-	PhoneNumberToWordsService phoneNumberWordsGenerator = new PhoneNumberToWordsServiceImpl();
+	PhoneNumberToWordsService phoneNumberToWordsService = new PhoneNumberToWordsServiceImpl();
 	List<String> phoneNumberList = new ArrayList<>();
 	phoneNumberList.add("INVALIDNUMBER");
-	phoneNumberWordsGenerator.buildWords(phoneNumberList);
+	phoneNumberToWordsService.buildWords(phoneNumberList);
 	Assert.assertTrue(false);
     }
 
     @Test
     public void whenPhoneNumberWithSpecialCharactorsThenGenerateWordsList()
 	    throws AconexException {
-	PhoneNumberToWordsService phoneNumberWordsGenerator = new PhoneNumberToWordsServiceImpl();
+	PhoneNumberToWordsService phoneNumberToWordsService = new PhoneNumberToWordsServiceImpl();
 	List<String> phoneNumberList = new ArrayList<>();
 	phoneNumberList.add("@#2-2'5_5");
-	Assert.assertTrue(phoneNumberWordsGenerator.buildWords(phoneNumberList)
+	Assert.assertTrue(phoneNumberToWordsService.buildWords(phoneNumberList)
 		.get("@#2-2'5_5").contains("CALL"));
     }
 
     @Test
     public void whenNoPrimaryWordFoundForNumberThenGenerateCombinedWordsList()
 	    throws AconexException {
-	PhoneNumberToWordsService phoneNumberWordsGenerator = new PhoneNumberToWordsServiceImpl();
+	PhoneNumberToWordsService phoneNumberToWordsService = new PhoneNumberToWordsServiceImpl();
 	List<String> phoneNumnersList = new ArrayList<>();
 	phoneNumnersList.add("225563");
-	Assert.assertTrue(phoneNumberWordsGenerator
+	Assert.assertTrue(phoneNumberToWordsService
 		.buildWords(phoneNumnersList).get("225563").contains("CALL-ME"));
+    }
+    
+    @Test
+    public void whenNoResultsThenTryOneDigitLeftOff()
+	    throws AconexException {
+	PhoneNumberToWordsService phoneNumberToWordsService = new PhoneNumberToWordsServiceImpl();
+	List<String> phoneNumnersList = new ArrayList<>();
+	phoneNumnersList.add("1225563");
+	Assert.assertTrue(phoneNumberToWordsService
+		.buildWords(phoneNumnersList).get("1225563").contains("1CALL-ME"));
     }
 
 }

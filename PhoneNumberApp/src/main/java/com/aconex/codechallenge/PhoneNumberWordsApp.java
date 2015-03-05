@@ -18,7 +18,7 @@ import com.aconex.codechallenge.service.ReportingServiceConsoleImpl;
 import com.aconex.codechallenge.utils.FileUtility;
 
 /**
- * @author chades
+ * @author Charith De Silva
  *
  */
 public class PhoneNumberWordsApp {
@@ -37,10 +37,12 @@ public class PhoneNumberWordsApp {
      */
     public Map<String, List<String>> generateWords(String[] parameters)
 	    throws AconexException {
+	
 	List<String> filesList = new ArrayList<>();
 	List<String> phoneNumberList = new ArrayList<>();
 	FileUtility fileUtility = new FileUtility();
 	Map<String, List<String>> phoneNumberWordMap = null;
+	
 	phoneNumberToWordsService = new PhoneNumberToWordsServiceImpl();
 	ReportingService = new ReportingServiceConsoleImpl();
 

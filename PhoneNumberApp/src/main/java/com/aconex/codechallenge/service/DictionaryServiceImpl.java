@@ -25,21 +25,20 @@ public class DictionaryServiceImpl implements DictionaryService {
 	if (dictionary == null) {
 	    this.loadDefaultDictionary(dictionaryDefaultFilePath);
 	}
-	
 	return dictionary.lookup(lookupString);
     }
 
     @Override
     public void load(String file) throws AconexException {
-	
+
 	dictionary = Dictionary.getInstance();
-	
+
 	try {
+
 	    FileUtility fileUtility = new FileUtility();
 	    List<String> dictionaryWords = fileUtility.readFile(file);
 
 	    loadWords(dictionaryWords);
-
 	} catch (IOException e) {
 	    throw new AconexException("Error reading file : " + file, e);
 	}
@@ -52,9 +51,9 @@ public class DictionaryServiceImpl implements DictionaryService {
      * @throws AconexException
      */
     private void loadDefaultDictionary(String file) throws AconexException {
-	
+
 	dictionary = Dictionary.getInstance();
-	
+
 	try {
 	    FileUtility fileUtility = new FileUtility();
 	    List<String> dictionaryWords = fileUtility.readResourceFile(file);
@@ -66,21 +65,26 @@ public class DictionaryServiceImpl implements DictionaryService {
 	}
 
     }
-    
+
     /**
      * @param dictionaryWords
      */
     public void loadWords(List<String> dictionaryWords) {
 	for (String dWord : dictionaryWords) {
-	dictionary
-		.addWord(dWord.replaceAll("[^\\w]", "").toUpperCase());
+	    dictionary.addWord(dWord.replaceAll("[^\\w]", "").toUpperCase());
 	}
     }
 
     @Override
-    public Boolean isWordExists(String lookupString) {
+    public Boolean isWordExists(String lookupString) throws AconexException {
 	boolean exists = false;
-	if(dictionary.lookup(lookupString) != null && !dictionary.lookup(lookupString).trim().equals("")){
+	
+	if (dictionary == null) {
+	    this.loadDefaultDictionary(dictionaryDefaultFilePath);
+	}
+
+	if (dictionary.lookup(lookupString) != null
+		&& !dictionary.lookup(lookupString).trim().equals("")) {
 	    exists = true;
 	}
 	return exists;
