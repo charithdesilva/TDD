@@ -152,7 +152,7 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 			for(String prefixWord : prefixWordsList) {
 			    for(String suffixWord : suffixWordsList) {
 				dictionaryWords.add(prefixWord + filteredNumber.toCharArray()[i] + suffixWord);
-				System.out.println("ADDING : " +prefixNumber + "["+ filteredNumber.toCharArray()[i] + "]"+ suffixNumber); 
+				LOGGER.fine("ADDING : " +prefixNumber + "["+ filteredNumber.toCharArray()[i] + "]"+ suffixNumber); 
 			    }
 			}
 			
