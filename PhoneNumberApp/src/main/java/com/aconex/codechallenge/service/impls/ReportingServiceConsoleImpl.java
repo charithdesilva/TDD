@@ -1,11 +1,13 @@
 /**
  * 
  */
-package com.aconex.codechallenge.service;
+package com.aconex.codechallenge.service.impls;
 
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import com.aconex.codechallenge.service.ReportingService;
 
 /**
  * @author Charith De Silva

@@ -10,6 +10,7 @@ import org.junit.rules.ExpectedException;
 
 import com.aconex.codechallenge.PhoneNumberWordsAppTest;
 import com.aconex.codechallenge.exceptions.AconexException;
+import com.aconex.codechallenge.service.impls.DictionaryServiceImpl;
 
 /**
  * @author Charith De Silva

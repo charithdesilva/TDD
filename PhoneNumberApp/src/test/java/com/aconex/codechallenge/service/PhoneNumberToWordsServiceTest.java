@@ -12,8 +12,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.aconex.codechallenge.exceptions.AconexException;
-import com.aconex.codechallenge.service.PhoneNumberToWordsService;
-import com.aconex.codechallenge.service.PhoneNumberToWordsServiceImpl;
+import com.aconex.codechallenge.service.impls.PhoneNumberToWordsServiceImpl;
 
 /**
  * @author Charith De Silva

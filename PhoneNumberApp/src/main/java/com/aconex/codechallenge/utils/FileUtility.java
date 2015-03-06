@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +21,9 @@ import java.util.logging.Logger;
  *
  */
 public class FileUtility {
-    
-    private static final Logger LOGGER = Logger.getLogger(FileUtility.class.getName());
+
+    private static final Logger LOGGER = Logger.getLogger(FileUtility.class
+	    .getName());
 
     /**
      * Read contents into a List for given files list.
@@ -51,30 +54,21 @@ public class FileUtility {
 
 	List<String> lines = new ArrayList<>();
 
-	// Get file from resources folder
-	ClassLoader classLoader = getClass().getClassLoader();
-	URL resource = classLoader.getResource(fileName);
-	File file = null;
-	
-	if (resource != null) {
-	    file = new File(resource.getFile());
+	InputStream in = getFileInputStream(fileName);
+
+	if (in != null) {
+	    BufferedReader br = new BufferedReader(new InputStreamReader(in));
+	    String line;
+	    while ((line = br.readLine()) != null) {
+		lines.add(line);
+	    }
 	} else {
 	    throw new FileNotFoundException("File " + fileName + " not found.");
 	}
 
-	try (Scanner scanner = new Scanner(file)) {
-
-	    while (scanner.hasNextLine()) {
-		String line = scanner.nextLine();
-		lines.add(line);
-	    }
-
-	    scanner.close();
-
-	}
 	return lines;
     }
-    
+
     /**
      * Read contents into a List for given file.
      * 
@@ -94,7 +88,7 @@ public class FileUtility {
 
 	return lines;
     }
-    
+
     /**
      * If file exists add to the list.
      * 
@@ -111,5 +105,14 @@ public class FileUtility {
 	}
     }
 
-    
+    /**
+     * Returns input stream for given file
+     * 
+     * @param fileName
+     * @return
+     */
+    public InputStream getFileInputStream(String fileName) {
+	return this.getClass().getClassLoader().getResourceAsStream(fileName);
+    }
+
 }

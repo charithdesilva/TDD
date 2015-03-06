@@ -11,11 +11,11 @@ import java.util.logging.Logger;
 
 import com.aconex.codechallenge.exceptions.AconexException;
 import com.aconex.codechallenge.service.DictionaryService;
-import com.aconex.codechallenge.service.DictionaryServiceImpl;
 import com.aconex.codechallenge.service.PhoneNumberToWordsService;
-import com.aconex.codechallenge.service.PhoneNumberToWordsServiceImpl;
 import com.aconex.codechallenge.service.ReportingService;
-import com.aconex.codechallenge.service.ReportingServiceConsoleImpl;
+import com.aconex.codechallenge.service.impls.DictionaryServiceImpl;
+import com.aconex.codechallenge.service.impls.PhoneNumberToWordsServiceImpl;
+import com.aconex.codechallenge.service.impls.ReportingServiceConsoleImpl;
 import com.aconex.codechallenge.utils.FileUtility;
 
 /**
@@ -42,9 +42,6 @@ public class PhoneNumberWordsApp {
     public Map<String, List<String>> generateWords(String[] parameters)
 	    throws AconexException {
 	
-	LOGGER.info("Phone word finder started ...");
-	LOGGER.fine("this is finer");
-	
 	List<String> filesList = new ArrayList<>();
 	List<String> phoneNumberList = new ArrayList<>();
 	FileUtility fileUtility = new FileUtility();
@@ -61,6 +58,7 @@ public class PhoneNumberWordsApp {
 	    processSystemInput(filesList, phoneNumberList);
 
 	    if (filesList.isEmpty() && phoneNumberList.isEmpty()) {
+		LOGGER.severe("Phone number list not provided.");
 		throw new AconexException("Phone number list not provided.");
 	    }
 
@@ -86,7 +84,7 @@ public class PhoneNumberWordsApp {
 	} catch (IOException e) {
 	    throw new AconexException(e.getMessage(), e);
 	}
-
+	
 	return phoneNumberWordMap;
     }
 
@@ -110,6 +108,7 @@ public class PhoneNumberWordsApp {
 			.println("Please enter another number or type 'C' to continue.");
 		if (line != null && !line.trim().equals("")) {
 		    phoneNumberList.add(line);
+		    LOGGER.fine("Adding input "+ line);
 		}
 	    }
 	    stdin.close();
@@ -136,8 +135,10 @@ public class PhoneNumberWordsApp {
 		    if (parameters.length == count + 2
 			    && new File(parameters[count + 1]).isFile()) {
 			this.dictionaryFilePath = parameters[count + 1];
+			LOGGER.fine("dictionaryFilePath "+ dictionaryFilePath);
 			break;
 		    } else {
+			LOGGER.severe("Invalid dictionary path. "+ dictionaryFilePath);
 			throw new AconexException("Invalid dictionary path.");
 		    }
 		}

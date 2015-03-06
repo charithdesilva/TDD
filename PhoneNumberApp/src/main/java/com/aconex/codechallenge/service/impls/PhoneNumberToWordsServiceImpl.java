@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.aconex.codechallenge.service;
+package com.aconex.codechallenge.service.impls;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -14,6 +14,8 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.aconex.codechallenge.exceptions.AconexException;
+import com.aconex.codechallenge.service.DictionaryService;
+import com.aconex.codechallenge.service.PhoneNumberToWordsService;
 
 /**
  * @author Charith De Silva
@@ -112,6 +114,7 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 	    String filteredNumber = phoneNumber.replaceAll("[^\\d]", "");
 
 	    if (filteredNumber == null || filteredNumber.trim().equals("")) {
+		LOGGER.severe("Invalid phone number found : "+ phoneNumber);
 		throw new AconexException("Invalid phone number found : "
 			+ phoneNumber);
 	    }
@@ -209,6 +212,7 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 	try {
 	    BigInteger.valueOf(Long.parseLong(phoneNumber));
 	} catch (NumberFormatException e) {
+	    LOGGER.severe("Invalid phone number found : "+ phoneNumber);
 	    throw new AconexException("Invalid phone number found : "
 		    + phoneNumber);
 	}
@@ -232,7 +236,11 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
     private void generatePossibleWords(String prefix, String remainder,
 	    List<String> words, List<String> wordsCache) {
 
+	LOGGER.fine("generatePossibleWords = prefix"+ prefix +" remainder "+remainder);
+	
 	int index = Integer.parseInt(remainder.substring(0, 1));
+	
+	LOGGER.fine("index "+ index);
 
 	for (int i = 0; i < phoneKeyMapper.get(index).size(); i++) {
 
@@ -250,6 +258,7 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 		    String stringToBeAdded = prefix + mappedChar;
 		    words.add(stringToBeAdded);
 		    wordsCache.add(stringToBeAdded.substring(1));
+		    LOGGER.finest("adding stringToBeAdded = "+ stringToBeAdded.substring(1));
 
 		} else {
 		    generatePossibleWords(prefix + mappedChar,
@@ -278,12 +287,14 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 
 	    if (prefix.length() > 1
 		    && this.dictionaryService.isWordExists(prefix)) {
+		LOGGER.finest("adding indexWordMap = ["+ parentWordIndex +"]"+ prefix);
 		indexWordMap.get(parentWordIndex).add(prefix);
 	    }
 
 	    if (suffix.length() > 1
 		    && this.dictionaryService.isWordExists(suffix)) {
 		indexWordMap.get((parentWordIndex + indexPosition)).add(suffix);
+		LOGGER.finest("adding indexWordMap = ["+ (parentWordIndex + indexPosition) +"]"+ suffix);
 	    }
 
 	    extractWords(suffix, 2, parentWordIndex + indexPosition);
@@ -320,7 +331,6 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 	// TODO : refactoring opportunity where the 1st inner recursive call
 	// becomes too costly due to redundant searchers.
 	this.extractWords(phoneNumberWord, 1, 0);
-
 	// this loop will concatenate possible word combinations together.
 	int index = 0;
 	List<String> wordList = new ArrayList<String>();
@@ -338,6 +348,7 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 	    wordList.addAll(wordsSet);
 	}
 
+	LOGGER.finest("extracted words "+phoneNumberWord+" >> "+wordList.size());
 	return wordList;
 
     }
