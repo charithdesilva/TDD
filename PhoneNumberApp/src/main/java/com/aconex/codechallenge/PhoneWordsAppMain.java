@@ -21,8 +21,7 @@ public class PhoneWordsAppMain {
      * @throws FileNotFoundException
      */
     public static void main(String[] args) throws AconexException {
-	LoggingHandler loggerHandler = LoggingHandler.getInstance();
-	loggerHandler.configure();
+	LoggingHandler loggerHandler = new LoggingHandler();
 	PhoneNumberWordsApp phoneNumberWordsApp = new PhoneNumberWordsApp();
 	phoneNumberWordsApp.generateWords(args);
     }

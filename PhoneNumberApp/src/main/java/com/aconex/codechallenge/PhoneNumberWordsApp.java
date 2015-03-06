@@ -42,7 +42,8 @@ public class PhoneNumberWordsApp {
     public Map<String, List<String>> generateWords(String[] parameters)
 	    throws AconexException {
 	
-	LOGGER.fine("Start method generateWords");
+	LOGGER.info("Phone word finder started ...");
+	LOGGER.fine("this is finer");
 	
 	List<String> filesList = new ArrayList<>();
 	List<String> phoneNumberList = new ArrayList<>();

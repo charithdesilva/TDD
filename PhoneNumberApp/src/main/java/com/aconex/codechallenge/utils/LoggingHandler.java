@@ -1,56 +1,36 @@
 package com.aconex.codechallenge.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
+import java.net.URL;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 public class LoggingHandler {
-    
-    private static LoggingHandler handler = null;
-    private static final Logger LOGGER = Logger.getLogger(LoggingHandler.class
-	    .getName());
 
-    private LoggingHandler() {
-
-    }
+    private static final LogManager logManager = LogManager.getLogManager();
+    private static final Logger LOGGER = Logger.getLogger("confLogger");
     
-    public static LoggingHandler getInstance() {
-	if(handler == null) {
-	    handler = new LoggingHandler();
-	}
+    static {
 	
-	return handler;
-    }
-
-    public void configure() {
-
-	Handler consoleHandler = null;
-	Handler fileHandler = null;
-
 	try {
-	    consoleHandler = new ConsoleHandler();
-
-	    fileHandler = new FileHandler("./aconex_debug.log");
-
-	    // Assigning handlers to LOGGER object
-	    LOGGER.addHandler(consoleHandler);
-	    LOGGER.addHandler(fileHandler);
-
-	    // Setting levels to handlers and LOGGER
-	    consoleHandler.setLevel(Level.INFO);
-	    fileHandler.setLevel(Level.FINE);
-	    LOGGER.setLevel(Level.ALL);
-
-	    // Console handler removed
-	    LOGGER.removeHandler(consoleHandler);
-
+		
+	    // Get file from resources folder
+	    ClassLoader classLoader = LoggingHandler.class.getClassLoader();
+	    URL resource = classLoader.getResource("logging.properties");
+	    File file = null;
+	    if (resource != null) {
+		file = new File(resource.getFile());
+	    } else {
+		    LOGGER.log(Level.SEVERE, "File error");
+	    }
+	    logManager.readConfiguration(new FileInputStream(file));
 	} catch (IOException exception) {
-	    LOGGER.log(Level.SEVERE, "Error occur in FileHandler.", exception);
+	    LOGGER.log(Level.SEVERE, "Error in loading configuration",
+		    exception);
 	}
-
     }
-
+    
 }
