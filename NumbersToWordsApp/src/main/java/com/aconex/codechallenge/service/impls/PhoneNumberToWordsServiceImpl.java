@@ -129,51 +129,7 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 	    // if empty try with numeric digit in
 	    if (dictionaryWords.isEmpty()) {
 
-		List<Integer> ignoreIdexes = new ArrayList<>();
-		ignoreIdexes.add(1);
-		ignoreIdexes.add((filteredNumber.length() - 2));
-
-		List<String> prefixWordsList = new ArrayList<>();
-		List<String> suffixWordsList = new ArrayList<>();
-
-		for (int i = 0; i < filteredNumber.length(); i++) {
-		    if (!ignoreIdexes.contains(i)) {
-
-			String prefixNumber = filteredNumber.substring(0, i);
-			String suffixNumber = filteredNumber.substring(i + 1,
-				filteredNumber.length());
-
-			if (i == 0) {
-			    prefixWordsList.add("");
-			} else if (null != prefixNumber
-				&& !prefixNumber.trim().equals("")) {
-			    prefixWordsList = filterValidWords(prefixNumber,
-				    this.generateWords(prefixNumber));
-			}
-
-			if (null != suffixNumber
-				&& !suffixNumber.trim().equals("")) {
-			    suffixWordsList = filterValidWords(prefixNumber,
-				    this.generateWords(suffixNumber));
-			}
-
-			if (prefixWordsList.isEmpty()
-				&& suffixWordsList.isEmpty())
-			    continue;
-
-			for (String prefixWord : prefixWordsList) {
-			    for (String suffixWord : suffixWordsList) {
-				dictionaryWords.add(prefixWord
-					+ filteredNumber.toCharArray()[i]
-					+ suffixWord);
-				LOGGER.fine("ADDING : " + prefixNumber + "["
-					+ filteredNumber.toCharArray()[i] + "]"
-					+ suffixNumber);
-			    }
-			}
-
-		    }
-		}
+		extractWordsDigitsLeftOff(filteredNumber, dictionaryWords);
 	    }
 
 	    if (!dictionaryWords.isEmpty()) {
@@ -182,6 +138,62 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 	}
 
 	return phoneNumberDictionaryWordMap;
+    }
+
+    /**
+     * Extract words with some digits left off the results.
+     * 
+     * @param filteredNumber
+     * @param dictionaryWords
+     * @throws AconexException
+     */
+    private void extractWordsDigitsLeftOff(String filteredNumber,
+	    List<String> dictionaryWords) throws AconexException {
+	List<Integer> ignoreIdexes = new ArrayList<>();
+	ignoreIdexes.add(1);
+	ignoreIdexes.add((filteredNumber.length() - 2));
+
+	List<String> prefixWordsList = new ArrayList<>();
+	List<String> suffixWordsList = new ArrayList<>();
+
+	for (int i = 0; i < filteredNumber.length(); i++) {
+	    if (!ignoreIdexes.contains(i)) {
+
+		String prefixNumber = filteredNumber.substring(0, i);
+		String suffixNumber = filteredNumber.substring(i + 1,
+			filteredNumber.length());
+
+		if (i == 0) {
+		    prefixWordsList.add("");
+		} else if (null != prefixNumber
+			&& !prefixNumber.trim().equals("")) {
+		    prefixWordsList = filterValidWords(prefixNumber,
+			    this.generateWords(prefixNumber));
+		}
+
+		if (null != suffixNumber
+			&& !suffixNumber.trim().equals("")) {
+		    suffixWordsList = filterValidWords(prefixNumber,
+			    this.generateWords(suffixNumber));
+		}
+
+		if (prefixWordsList.isEmpty()
+			&& suffixWordsList.isEmpty())
+		    continue;
+
+		for (String prefixWord : prefixWordsList) {
+		    for (String suffixWord : suffixWordsList) {
+			dictionaryWords.add(prefixWord
+				+ filteredNumber.toCharArray()[i]
+				+ suffixWord);
+			LOGGER.fine("ADDING : " + prefixNumber + "["
+				+ filteredNumber.toCharArray()[i] + "]"
+				+ suffixNumber);
+		    }
+		}
+
+	    }
+	}
     }
 
     /**
@@ -306,6 +318,10 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 			+ prefix);
 		indexWordMap.get(parentWordIndex).add(prefix);
 	    }
+	    
+	    if(suffix.contains("CALL")) {
+		System.out.println("true");
+	    }
 
 	    if (suffix.length() > 1
 		    && this.dictionaryService.isWordExists(suffix)) {
@@ -314,7 +330,7 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 			+ (parentWordIndex + indexPosition) + "]" + suffix);
 	    }
 
-	    extractWords(suffix, 2, parentWordIndex + indexPosition);
+	    extractWords(suffix, 1, parentWordIndex + indexPosition);
 	    extractWords(word, indexPosition + 1, parentWordIndex);
 	}
 
@@ -347,7 +363,7 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 	// recursive loop to find all possible combinations
 	// TODO : refactoring opportunity where the 1st inner recursive call
 	// becomes too costly due to redundant searchers.
-	this.extractWords(phoneNumberWord, 1, 0);
+	this.extractWords(phoneNumberWord, 0, 0);
 	// this loop will concatenate possible word combinations together.
 	int index = 0;
 	List<String> wordList = new ArrayList<String>();
@@ -355,8 +371,9 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 	String prefix = "";
 	int lastIndex = phoneNumberWord.length() + 1;
 
+	
 	generateMultiWordsForNumber(index, wordList, prefix, lastIndex);
-
+	
 	// remove out duplicate entries
 	if (!wordList.isEmpty()) {
 	    Set<String> wordsSet = new HashSet<>();
@@ -364,6 +381,7 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 	    wordList.clear();
 	    wordList.addAll(wordsSet);
 	}
+
 
 	LOGGER.finest("extracted words " + phoneNumberWord + " >> "
 		+ wordList.size());
@@ -391,6 +409,26 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 
 		if (lastIndex == (lastWordIndex + 1)) {
 		    wordList.add(phoneWord.substring(1));
+		} else {
+		    generateMultiWordsForNumber(lastWordIndex, wordList,
+			    phoneWord, lastIndex);
+		}
+
+	    }
+	} else {
+	    
+	    // try word with + 1 index 
+	    List<String> wordSetWithDigits = this.indexWordMap.get(index+1);
+	    
+	    for (String word : wordSetWithDigits) {
+		
+		String phoneWord = prefix + "-$" + word;
+		int lastWordIndex = index + 1 + word.length();
+		
+		if (lastIndex == (lastWordIndex + 1)) {
+		    wordList.add(phoneWord.substring(1));
+		} else if (lastIndex == (lastWordIndex + 2)) {
+		    wordList.add(phoneWord.substring(1) + "$");
 		} else {
 		    generateMultiWordsForNumber(lastWordIndex, wordList,
 			    phoneWord, lastIndex);

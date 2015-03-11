@@ -73,5 +73,15 @@ public class PhoneNumberToWordsServiceTest {
 	Assert.assertTrue(phoneNumberToWordsService
 		.buildWords(phoneNumnersList).get("1225563").contains("1CALL-ME"));
     }
+    
+    @Test
+    public void whenNoResultsForOneDigitLeftOffThenTryTwoDigitsLeftOff()
+	    throws AconexException {
+	PhoneNumberToWordsService phoneNumberToWordsService = new PhoneNumberToWordsServiceImpl();
+	List<String> phoneNumnersList = new ArrayList<>();
+	phoneNumnersList.add("92255");
+	Assert.assertTrue(phoneNumberToWordsService
+		.buildWords(phoneNumnersList).get("92255").contains("9CALL"));
+    }
 
 }
