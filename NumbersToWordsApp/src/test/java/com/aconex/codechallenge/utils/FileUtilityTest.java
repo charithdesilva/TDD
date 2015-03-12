@@ -26,7 +26,7 @@ public class FileUtilityTest {
 	List<String> numbersList = null;
 	filesList.add(PhoneNumberWordsAppTest.PHONE_LIST_PATH_1);
 	numbersList = fileUtility.readFiles(filesList);
-	Assert.assertEquals("121212", numbersList.get(0));
+	Assert.assertEquals("333554", numbersList.get(0));
     }
 
     @Test(expected = IOException.class)

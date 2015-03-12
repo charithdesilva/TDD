@@ -42,7 +42,7 @@ public class PhoneNumberWordsAppTest {
     @Test
     public void whenNoPhoneNumberFilePathArgumentsThenReceiveFromSystemIn()
 	    throws AconexException {
-	systemInMock.provideText("31212\n313313\nC\n");
+	systemInMock.provideText("33242\n45644\nC\n");
 	new PhoneNumberWordsApp().generateWords(null);
 	Assert.assertTrue(true);
     }
@@ -70,7 +70,7 @@ public class PhoneNumberWordsAppTest {
     public void whenWordDictionaryFilePathArgumentWithPhoneNumberFilePathArgumentsReceiveFromSystemIn()
 	    throws AconexException {
 	String args[] = { "-d", DICTIONARY_PATH };
-	systemInMock.provideText("31212\n313313\nC\n");
+	systemInMock.provideText("56565\n89454\nC\n");
 	new PhoneNumberWordsApp().generateWords(args);
 	Assert.assertTrue(true);
     }

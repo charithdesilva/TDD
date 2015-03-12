@@ -65,8 +65,11 @@ public class PhoneNumberToWordsServiceTest {
     }
     
     @Test
-    public void whenNoResultsThenTryOneDigitLeftOff()
+    public void whenNumberHas1or0ThenThrowException()
 	    throws AconexException {
+	
+	expectedEx.expect(AconexException.class);
+	expectedEx.expectMessage("Invalid phone number found : 1225563");
 	PhoneNumberToWordsService phoneNumberToWordsService = new PhoneNumberToWordsServiceImpl();
 	List<String> phoneNumnersList = new ArrayList<>();
 	phoneNumnersList.add("1225563");
@@ -79,9 +82,9 @@ public class PhoneNumberToWordsServiceTest {
 	    throws AconexException {
 	PhoneNumberToWordsService phoneNumberToWordsService = new PhoneNumberToWordsServiceImpl();
 	List<String> phoneNumnersList = new ArrayList<>();
-	phoneNumnersList.add("922559");
+	phoneNumnersList.add("922559639");
 	Assert.assertTrue(phoneNumberToWordsService
-		.buildWords(phoneNumnersList).get("922559").contains("9CALL9"));
+		.buildWords(phoneNumnersList).get("922559639").contains("9CALL-9ME9"));
     }
 
 }
