@@ -266,10 +266,6 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 		indexWordMap.get(parentWordIndex).add(prefix);
 	    }
 
-	    if (suffix.contains("CALL")) {
-		System.out.println("true");
-	    }
-
 	    if (suffix.length() > 1
 		    && this.dictionaryService.isWordExists(suffix)) {
 		indexWordMap.get((parentWordIndex + indexPosition)).add(suffix);
@@ -310,7 +306,6 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 
 	// recursive loop to find all possible combinations
 	// TODO : refactoring opportunity where the 1st inner recursive call
-	// becomes too costly due to redundant searchers.
 	this.extractWords(phoneNumberWord, 0, 0);
 	// this loop will concatenate possible word combinations together.
 	int index = 0;
@@ -328,8 +323,6 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 	    wordsSet.addAll(wordList);
 	    wordList.clear();
 	    wordList.addAll(wordsSet);
-
-	    // add digits words list only if full word list is empty
 	}
 
 	LOGGER.finest("extracted words " + phoneNumberWord + " >> "
