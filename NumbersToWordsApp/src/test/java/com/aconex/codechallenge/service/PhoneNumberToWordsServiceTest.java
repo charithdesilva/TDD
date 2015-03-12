@@ -79,9 +79,9 @@ public class PhoneNumberToWordsServiceTest {
 	    throws AconexException {
 	PhoneNumberToWordsService phoneNumberToWordsService = new PhoneNumberToWordsServiceImpl();
 	List<String> phoneNumnersList = new ArrayList<>();
-	phoneNumnersList.add("92255");
+	phoneNumnersList.add("922559");
 	Assert.assertTrue(phoneNumberToWordsService
-		.buildWords(phoneNumnersList).get("92255").contains("9CALL"));
+		.buildWords(phoneNumnersList).get("922559").contains("9CALL9"));
     }
 
 }

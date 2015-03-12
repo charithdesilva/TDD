@@ -129,7 +129,7 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 	    // if empty try with numeric digit in
 	    if (dictionaryWords.isEmpty()) {
 
-		extractWordsDigitsLeftOff(filteredNumber, dictionaryWords);
+		//extractWordsDigitsLeftOff(filteredNumber, dictionaryWords);
 	    }
 
 	    if (!dictionaryWords.isEmpty()) {
@@ -371,9 +371,8 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 	String prefix = "";
 	int lastIndex = phoneNumberWord.length() + 1;
 
-	
 	generateMultiWordsForNumber(index, wordList, prefix, lastIndex);
-	
+
 	// remove out duplicate entries
 	if (!wordList.isEmpty()) {
 	    Set<String> wordsSet = new HashSet<>();
@@ -381,7 +380,6 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 	    wordList.clear();
 	    wordList.addAll(wordsSet);
 	}
-
 
 	LOGGER.finest("extracted words " + phoneNumberWord + " >> "
 		+ wordList.size());
@@ -399,7 +397,7 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
      * @param lastIndex
      */
     private void generateMultiWordsForNumber(int index, List<String> wordList,
-	    String prefix, int lastIndex) {
+	    String prefix, int lastIndex, String phoneNumber) {
 	List<String> wordSet = this.indexWordMap.get(index);
 
 	if (wordSet != null && !wordSet.isEmpty()) {
@@ -411,30 +409,35 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 		    wordList.add(phoneWord.substring(1));
 		} else {
 		    generateMultiWordsForNumber(lastWordIndex, wordList,
-			    phoneWord, lastIndex);
+			    phoneWord, lastIndex, phoneNumber);
 		}
 
 	    }
-	} else {
+	} 
+	else {
 	    
 	    // try word with + 1 index 
 	    List<String> wordSetWithDigits = this.indexWordMap.get(index+1);
 	    
-	    for (String word : wordSetWithDigits) {
+	    if (wordSetWithDigits != null && !wordSetWithDigits.isEmpty()) {
 		
-		String phoneWord = prefix + "-$" + word;
-		int lastWordIndex = index + 1 + word.length();
-		
-		if (lastIndex == (lastWordIndex + 1)) {
-		    wordList.add(phoneWord.substring(1));
-		} else if (lastIndex == (lastWordIndex + 2)) {
-		    wordList.add(phoneWord.substring(1) + "$");
-		} else {
-		    generateMultiWordsForNumber(lastWordIndex, wordList,
-			    phoneWord, lastIndex);
+		for (String word : wordSetWithDigits) {
+		    
+		    String phoneWord = prefix + "-$" + word;
+		    int lastWordIndex = index + 1 + word.length();
+		    
+		    if (lastIndex == (lastWordIndex + 1)) {
+			wordList.add(phoneWord.substring(1));
+		    } else if (lastIndex == (lastWordIndex + 2)) {
+			wordList.add(phoneWord.substring(1) + "$");
+		    } else {
+			generateMultiWordsForNumber(lastWordIndex, wordList,
+				phoneWord, lastIndex, phoneNumber);
+		    }
+		    
 		}
-
 	    }
+	    
 	}
     }
 
