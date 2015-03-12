@@ -78,7 +78,7 @@ public class PhoneNumberToWordsServiceTest {
     }
     
     @Test
-    public void whenNoResultsForOneDigitLeftOffThenTryTwoDigitsLeftOff()
+    public void whenNoResultsFoundThenTryDigitsLeftOff()
 	    throws AconexException {
 	PhoneNumberToWordsService phoneNumberToWordsService = new PhoneNumberToWordsServiceImpl();
 	List<String> phoneNumnersList = new ArrayList<>();
@@ -86,5 +86,17 @@ public class PhoneNumberToWordsServiceTest {
 	Assert.assertTrue(phoneNumberToWordsService
 		.buildWords(phoneNumnersList).get("922559639").contains("9CALL-9ME9"));
     }
+    
+    
+    @Test
+    public void whenNoResultsFoundEvenWithDigitCombinationsThenReturnEmptyListThen()
+	    throws AconexException {
+	PhoneNumberToWordsService phoneNumberToWordsService = new PhoneNumberToWordsServiceImpl();
+	List<String> phoneNumnersList = new ArrayList<>();
+	phoneNumnersList.add("9999999");
+	Assert.assertTrue(phoneNumberToWordsService
+		.buildWords(phoneNumnersList).isEmpty());
+    }
+    
 
 }
