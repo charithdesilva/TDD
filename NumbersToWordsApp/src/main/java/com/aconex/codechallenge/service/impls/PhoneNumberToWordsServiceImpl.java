@@ -28,7 +28,7 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 
     private static List<List<String>> phoneKeyMapper = null;
     private DictionaryService dictionaryService = null;
-
+    private Map<Integer, List<String>> indexWordMap = null;
     /**
      * public constructor
      */
@@ -279,8 +279,6 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 
     }
 
-    private Map<Integer, List<String>> indexWordMap = null;
-
     /**
      * Handler method for extracting all words.
      * 
@@ -405,12 +403,7 @@ public class PhoneNumberToWordsServiceImpl implements PhoneNumberToWordsService 
 	}
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.aconex.codechallenge.service.PhoneNumberToWordsService#
-     * setDictionaryService(com.aconex.codechallenge.service.DictionaryService)
-     */
+
     @Override
     public void setDictionaryService(DictionaryService dictionaryService) {
 	this.dictionaryService = dictionaryService;
