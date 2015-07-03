@@ -39,7 +39,7 @@ public class QuickStart {
     public static void main(String[] args) throws Exception {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         try {
-            HttpGet httpGet = new HttpGet("http://deamelhqgr622:8082/Dekho/rest/ConfigurationRestService/getMapDetails?sessionId=0A04015E:014E520FB3AC:19B2:4E563D56&mapId=2");
+            HttpGet httpGet = new HttpGet(args[0]);
             CloseableHttpResponse response1 = httpclient.execute(httpGet);
             // The underlying HTTP connection is still held by the response object
             // to allow the response content to be streamed directly from the network socket.
