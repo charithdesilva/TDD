@@ -1,0 +1,5 @@
+<project name="MyProject" basedir=".">
+    <property name="buildC" value="${basedir}" />
+	<echo>${basedir}</echo>
+    <exec dir="${basedir}" executable="rename_delete.bat"/>
+</project>
